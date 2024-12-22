@@ -7,12 +7,9 @@ import java.awt.*;
 public class MainFrame extends JFrame {
     private JPanel header;
     private JScrollPane scrollBody; // Ganti body menjadi JScrollPane
-    private MusicController musicController;
-
     private JPanel footer;
 
-    public MainFrame(MusicController musicController) {
-        this.musicController = musicController;
+    public MainFrame() {
         setTitle("Music Management App");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 400);

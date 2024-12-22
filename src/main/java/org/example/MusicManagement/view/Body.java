@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class Body extends JPanel {
     private ArrayList<Music> arrMusic; // Menyimpan daftar musik
     private MusicController musicController;
+    public String targetSongPlay;
 
     public Body(MusicController controller, ArrayList<Music> arrMusic) {
         this.arrMusic = arrMusic;
@@ -45,8 +46,8 @@ public class Body extends JPanel {
         cardPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Ruang kosong di dalam card
 
         // Set fixed width and height for the card
-        cardPanel.setPreferredSize(new Dimension(400, 120)); // Set width to 400px and height to 120px
-        cardPanel.setMaximumSize(new Dimension(400, 120)); // Ensure maximum size is the same
+        cardPanel.setPreferredSize(new Dimension(500, 120)); // Set width to 400px and height to 120px
+        cardPanel.setMaximumSize(new Dimension(1500, 120)); // Ensure maximum size is the same
 
         // Panel untuk menampilkan gambar album
         JLabel albumImage = createAlbumImage(music);
@@ -111,6 +112,7 @@ public class Body extends JPanel {
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 // Logika saat card diklik
                 System.out.println("Selected Music: " + music.getPathSong() + ", song name: " + music.getSongName());
+                musicController.startPlayMusic(music.getPathSong(), music.getSongName());
                 // Anda bisa menambahkan aksi lain yang diinginkan ketika kartu dipilih
             }
         });
@@ -169,6 +171,7 @@ public class Body extends JPanel {
             // Logic to search for and delete the song
             if (musicController.deleteMusic(music.getSongName())) {
                 System.out.println("Music successfully deleted");
+
             } else {
                 System.out.println("Failed to delete music");
             }
@@ -205,296 +208,4 @@ public class Body extends JPanel {
 
         return null; // If neither album nor default image exists, return null
     }
-
-
-
 }
-//    private ArrayList<Music> arrMusic; // Menyimpan daftar musik
-//    private MusicController musicController;
-//
-//    public Body(MusicController controller, ArrayList<Music> arrMusic) {
-//        this.arrMusic = arrMusic;
-//        this.musicController = controller;
-//        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); // Mengatur layout vertikal
-//        displayMusicList();
-//    }
-//
-//    private void displayMusicList() {
-//        removeAll(); // Hapus semua komponen sebelumnya (jika ada)
-//
-//        // Menambahkan detail untuk setiap lagu dalam daftar musik
-//        for (Music music : arrMusic) {
-//            // Panggil createCard untuk membuat panel kartu dan tampilkan musik
-//            JPanel card = createCard(music);
-//
-//            // Tambahkan card ke Body
-//            add(card);
-//
-//            // Tambahkan space (margin) setelah setiap card musik
-//            add(Box.createVerticalStrut(10)); // Menambahkan jarak 10px antara card musik
-//        }
-//
-//        revalidate(); // Refresh UI
-//        repaint(); // Redraw UI
-//    }
-//
-//    // Helper method untuk membuat card-like panel yang bisa diklik
-//    private JPanel createCard(Music music) {
-//        JPanel cardPanel = new JPanel();
-//        cardPanel.setLayout(new BorderLayout());
-//        cardPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Ruang kosong di dalam card
-//
-//        // Set fixed width and height for the card
-//        cardPanel.setPreferredSize(new Dimension(400, 120)); // Set width to 400px and height to 120px
-//        cardPanel.setMaximumSize(new Dimension(400, 120)); // Ensure maximum size is the same
-//
-//        // Panel untuk menampilkan gambar album
-//        JLabel albumImage = createAlbumImage(music);
-//        if (albumImage != null) {
-//            cardPanel.add(albumImage, BorderLayout.WEST); // Menambahkan gambar di sebelah kiri
-//        }
-//
-//        // Panel untuk menampilkan teks informasi musik
-//        JPanel textPanel = new JPanel();
-//        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS)); // Layout vertikal
-//
-//        JLabel songNameLabel = new JLabel(music.getSongName());
-//        songNameLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Set font untuk song name
-//        songNameLabel.setForeground(Color.BLACK); // Set warna teks
-//
-//        JLabel artistNameLabel = new JLabel(music.getArtistName());
-//        artistNameLabel.setFont(new Font("Arial", Font.ITALIC, 14)); // Set font untuk artist name
-//        artistNameLabel.setForeground(Color.GRAY); // Set warna teks
-//
-//        // Menambahkan label ke textPanel
-//        textPanel.add(songNameLabel);
-//        textPanel.add(artistNameLabel);
-//
-//        cardPanel.add(textPanel, BorderLayout.CENTER); // Menambahkan teks di tengah
-//
-//        // Panel untuk tombol Update dan Delete
-//        JPanel buttonPanel = new JPanel();
-//        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT)); // Layout tombol di sebelah kanan
-//
-//        // Tombol Update
-//        JButton updateButton = new JButton("Update");
-//        updateButton.addActionListener(e -> {
-//            // Logika saat tombol Update diklik
-//            System.out.println("Update Music: " + music.getSongName());
-//            // Tambahkan aksi untuk update musik di sini
-//        });
-//
-//        // Tombol Delete
-//        JButton deleteButton = new JButton("Delete");
-//        deleteButton.addActionListener(e -> {
-//            deleteUI(music, cardPanel);
-//        });
-//
-//        // Menambahkan tombol ke buttonPanel
-//        buttonPanel.add(updateButton);
-//        buttonPanel.add(deleteButton);
-//
-//        // Menambahkan buttonPanel ke kanan cardPanel
-//        cardPanel.add(buttonPanel, BorderLayout.EAST);
-//
-//        // Mengatur agar cardPanel memiliki background putih
-//        cardPanel.setOpaque(true); // Set agar background panel terlihat (misal berwarna putih)
-//        cardPanel.setBackground(Color.WHITE); // Warna latar belakang putih
-//
-//        // Menambahkan MouseListener ke panel, sehingga seluruh card bisa diklik
-//        cardPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Ubah kursor menjadi "tangan"
-//        cardPanel.addMouseListener(new java.awt.event.MouseAdapter() {
-//            @Override
-//            public void mouseClicked(java.awt.event.MouseEvent e) {
-//                // Logika saat card diklik
-//                System.out.println("Selected Music: " + music.getPathSong() + ", song name: " + music.getSongName());
-//                // Anda bisa menambahkan aksi lain yang diinginkan ketika kartu dipilih
-//            }
-//        });
-//
-//        return cardPanel;
-//    }
-//
-//    private void deleteUI(Music music, JPanel cardPanel) {
-//        int response = JOptionPane.showConfirmDialog(cardPanel,
-//                "Do you want to delete: " + music.getSongName() + "?",
-//                "Confirm Delete",
-//                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-//
-//        // If the user clicks "Yes"
-//        if (response == JOptionPane.YES_OPTION) {
-//            // Logic to search for and delete the song
-//            if (musicController.deleteMusic(music.getSongName())) {
-//                System.out.println("Music successfully deleted");
-//            } else {
-//                System.out.println("Failed to delete music");
-//            }
-//        } else {
-//            // If the user clicks "No" or closes the dialog
-//            System.out.println("No song was deleted.");
-//        }
-//    }
-//
-//    // Helper method untuk menampilkan gambar album jika path tersedia
-//    private JLabel createAlbumImage(Music music) {
-//        String albumPath = music.getAlbum();
-//        if (albumPath != null && !albumPath.isEmpty()) {
-//            String imagePath = "src/main/java/org/example/MusicManagement/assets/img/" + albumPath + ".jpg"; // Menambahkan ekstensi .jpg
-//            File imageFile = new File(imagePath);
-//            if (imageFile.exists()) {
-//                ImageIcon albumIcon = new ImageIcon(imagePath);
-//                Image image = albumIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Resize gambar jika diperlukan
-//                return new JLabel(new ImageIcon(image)); // Kembalikan JLabel dengan gambar album
-//            }
-//        }
-//        return null; // Jika tidak ada gambar album
-//    }
-//}
-
-
-
-//package org.example.MusicManagement.view;
-//
-//import org.example.MusicManagement.Controller.MusicController;
-//import org.example.MusicManagement.model.Music;
-//
-//import javax.swing.*;
-//import java.awt.*;
-//import java.io.File;
-//import java.util.ArrayList;
-//
-//public class Body extends JPanel {
-//    private ArrayList<Music> arrMusic; // Menyimpan daftar musik
-//    private MusicController musicController;
-//
-//    public Body(MusicController controller,ArrayList<Music> arrMusic) {
-//        this.arrMusic = arrMusic;
-//        this.musicController = controller;
-//        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); // Mengatur layout vertikal
-//        displayMusicList();
-//    }
-//
-//    private void displayMusicList() {
-//        removeAll(); // Hapus semua komponen sebelumnya (jika ada)
-//
-//        // Menambahkan detail untuk setiap lagu dalam daftar musik
-//        for (Music music : arrMusic) {
-//            // Panggil createCard untuk membuat panel kartu dan tampilkan musik
-//            JPanel card = createCard(music);
-//
-//            // Tambahkan card ke Body
-//            add(card);
-//
-//            // Tambahkan space (margin) setelah setiap card musik
-//            add(Box.createVerticalStrut(10)); // Menambahkan jarak 10px antara card musik
-//        }
-//
-//        revalidate(); // Refresh UI
-//        repaint(); // Redraw UI
-//    }
-//
-//    // Helper method untuk membuat card-like panel yang bisa diklik
-//    private JPanel createCard(Music music) {
-//        JPanel cardPanel = new JPanel();
-//        cardPanel.setLayout(new BorderLayout());
-//        cardPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Ruang kosong di dalam card
-//
-//        // Panel untuk menampilkan gambar album
-//        JLabel albumImage = createAlbumImage(music);
-//        if (albumImage != null) {
-//            cardPanel.add(albumImage, BorderLayout.WEST); // Menambahkan gambar di sebelah kiri
-//        }
-//
-//        // Panel untuk menampilkan teks informasi musik
-//        JPanel textPanel = new JPanel();
-//        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS)); // Layout vertikal
-//
-//        JLabel songNameLabel = new JLabel(music.getSongName());
-//        songNameLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Set font untuk song name
-//        songNameLabel.setForeground(Color.BLACK); // Set warna teks
-//
-//        JLabel artistNameLabel = new JLabel(music.getArtistName());
-//        artistNameLabel.setFont(new Font("Arial", Font.ITALIC, 14)); // Set font untuk artist name
-//        artistNameLabel.setForeground(Color.GRAY); // Set warna teks
-//
-//        // Menambahkan label ke textPanel
-//        textPanel.add(songNameLabel);
-//        textPanel.add(artistNameLabel);
-//
-//        cardPanel.add(textPanel, BorderLayout.CENTER); // Menambahkan teks di tengah
-//
-//        // Panel untuk tombol Update dan Delete
-//        JPanel buttonPanel = new JPanel();
-//        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT)); // Layout tombol di sebelah kanan
-//
-//        // Tombol Update
-//        JButton updateButton = new JButton("Update");
-//        updateButton.addActionListener(e -> {
-//            // Logika saat tombol Update diklik
-//            System.out.println("Update Music: " + music.getSongName());
-//            // Tambahkan aksi untuk update musik di sini
-//        });
-//
-//        // Tombol Delete
-//        JButton deleteButton = new JButton("Delete");
-//        deleteButton.addActionListener(e -> {
-//            // Display a confirmation dialog to verify the deletion
-//            int response = JOptionPane.showConfirmDialog(cardPanel,
-//                    "Do you want to delete: " + music.getSongName() + "?",
-//                    "Confirm Delete",
-//                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-//
-//            // If the user clicks "Yes"
-//            if (response == JOptionPane.YES_OPTION) {
-//                // Logic to search for and delete the song
-//                if (musicController.deleteMusic(music.getSongName())) {
-//                    System.out.println("Music successfully deleted");
-//                } else {
-//                    System.out.println("Failed to delete music");
-//                }
-//            } else {
-//                // If the user clicks "No" or closes the dialog
-//                System.out.println("No song was deleted.");
-//            }
-//        });
-//
-//        // Menambahkan tombol ke buttonPanel
-//        buttonPanel.add(updateButton);
-//        buttonPanel.add(deleteButton);
-//
-//        // Menambahkan buttonPanel ke kanan cardPanel
-//        cardPanel.add(buttonPanel, BorderLayout.EAST);
-//
-//        // Mengatur agar cardPanel memiliki background putih
-//        cardPanel.setOpaque(true); // Set agar background panel terlihat (misal berwarna putih)
-//        cardPanel.setBackground(Color.WHITE); // Warna latar belakang putih
-//
-//        // Menambahkan MouseListener ke panel, sehingga seluruh card bisa diklik
-//        cardPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Ubah kursor menjadi "tangan"
-//        cardPanel.addMouseListener(new java.awt.event.MouseAdapter() {
-//            @Override
-//            public void mouseClicked(java.awt.event.MouseEvent e) {
-//                // Logika saat card diklik
-//                System.out.println("Selected Music: " + music.getPathSong() + ", song name: " + music.getSongName());
-//                // Anda bisa menambahkan aksi lain yang diinginkan ketika kartu dipilih
-//            }
-//        });
-//
-//        return cardPanel;
-//    }
-//
-//    // Helper method untuk menampilkan gambar album jika path tersedia
-//    private JLabel createAlbumImage(Music music) {
-//        String albumPath = music.getAlbum();
-//        if (albumPath != null && !albumPath.isEmpty()) {
-//            String imagePath = "src/main/java/org/example/MusicManagement/assets/img/" + albumPath + ".jpg"; // Menambahkan ekstensi .jpg
-//            File imageFile = new File(imagePath);
-//            if (imageFile.exists()) {
-//                ImageIcon albumIcon = new ImageIcon(imagePath);
-//                Image image = albumIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Resize gambar jika diperlukan
-//                return new JLabel(new ImageIcon(image)); // Kembalikan JLabel dengan gambar album
-//            }
-//        }
-//        return null; // Jika tidak ada gambar album
-//    }
-//}

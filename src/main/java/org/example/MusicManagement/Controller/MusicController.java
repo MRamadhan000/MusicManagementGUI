@@ -2,6 +2,7 @@ package org.example.MusicManagement.Controller;
 
 import org.example.MusicManagement.DB;
 import org.example.MusicManagement.model.Music;
+import org.example.MusicManagement.model.MusicPlayer;
 import org.example.MusicManagement.view.Body;
 import org.example.MusicManagement.view.Footer;
 import org.example.MusicManagement.view.Header;
@@ -12,19 +13,41 @@ public class MusicController {
     private ArrayList<Music> arrMusic;
     private MainFrame mainFrame;
     private Body body; // Referensi ke Body
+    private MusicPlayer musicPlayer;
+    private String currentMusic = "";
+    private String nextMusic = "";
 
     public MusicController() {
         // Inisialisasi view utama
-        mainFrame = new MainFrame(this);
+        mainFrame = new MainFrame();
         arrMusic = DB.getDataDB();
+        musicPlayer = new MusicPlayer();
         // Load data atau setup awal
         setupView();
     }
     private void setupView() {
         // Panggil bagian view seperti Header, Body, Footer
-        mainFrame.setHeader(new Header());
+        mainFrame.setHeader(new Header(this));
         setUpBody();
-        mainFrame.setFooter(new Footer(this));
+        mainFrame.setFooter(new Footer());
+    }
+
+    //targeSongPlay = path
+    public void startPlayMusic(String targetSongPath,String songName){
+        String source = "src/main/java/org/example/MusicManagement/assets/music/" + targetSongPath + ".mp3";
+        this.nextMusic = songName;
+        if (currentMusic != null) {
+            currentMusic = songName;
+            musicPlayer.stopAudio();
+            musicPlayer.playAudio(source);
+            mainFrame.setFooter(new Footer(musicPlayer,songName));
+            this.nextMusic = null;
+        }else{
+            musicPlayer.playAudio(nextMusic);
+            this.currentMusic = targetSongPath;
+            mainFrame.setFooter(new Footer(musicPlayer,songName));
+            this.nextMusic = null;
+        }
     }
     public void showApp() {
         mainFrame.setVisible(true);
@@ -34,7 +57,6 @@ public class MusicController {
         arrMusic.add(music); // Menambahkan data ke list
         System.out.println("Music added: " + music.getSongName() + " in arrayList");
         DB.addDataToDB(music);
-//        this.body.updateMusicList(arrMusic); // Update tampilan Bod
         setUpBody();
     }
 
@@ -54,14 +76,25 @@ public class MusicController {
 
                 // Call DB.editToDB with the new song name
                 boolean dbUpdated = DB.editToDB(targetSongName,newSongName,newArtistName,newAlbum,newPathSong);
-                if (dbUpdated)
+                if (dbUpdated){
                     setUpBody();
+                }
+
+                if(currentMusic.equalsIgnoreCase(targetSongName))
+                    mainFrame.setFooter(new Footer(musicPlayer,newSongName));
                     // Return the result of the database update
                 return dbUpdated;
             }
         }
         System.out.println("Music not found with name: " + targetSongName);
         return false;
+    }
+
+    public void setUpFooter(String songName){
+        if (songName.equalsIgnoreCase(currentMusic)) {
+            musicPlayer.pauseAudio();
+            mainFrame.setFooter(new Footer());
+        }
     }
 
     public boolean deleteMusic(String songName) {
@@ -75,6 +108,7 @@ public class MusicController {
                 if (DB.deleteToDB(songName)) {
                     System.out.println("Song successfully removed from database.");
                     setUpBody();
+
 
                     return true; // Return true if deletion from both array and DB was successful
                 } else {
@@ -91,10 +125,4 @@ public class MusicController {
             System.out.println("Songname : " + music.getSongName() + " Artist Name : " + music.getArtistName() + " Album : " + music.getAlbum() + " Path Song : " + music.getPathSong() );
         }
     }
-
-
-
-
-
-
 }

@@ -2,76 +2,71 @@ package org.example.MusicManagement.view;
 
 import org.example.MusicManagement.Controller.MusicController;
 import org.example.MusicManagement.model.Music;
+import org.example.MusicManagement.model.MusicPlayer;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class Footer extends JPanel {
-    private MusicController musicController;
+    private JLabel songNameLabel;  // JLabel to display the current song name
+    private JButton pauseButton;   // Button to pause the music
+    private JButton resumeButton;  // Button to resume the music
 
-    public Footer(MusicController musicController) {
-        this.musicController = musicController;  // Store controller reference
+    public Footer(MusicPlayer musicPlayer, String songName) {
+        // Set layout and make the panel transparent (no background)
+        setLayout(new BorderLayout());
+        setOpaque(false);  // No background color, transparent footer
 
-        setLayout(new BorderLayout());  // Use BorderLayout for positioning components
-        setOpaque(false);  // Transparent panel
+        // Initialize the song name label
+        songNameLabel = new JLabel(songName);
+        songNameLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        songNameLabel.setForeground(Color.BLUE);  // Text color
 
-        // Create button with icon
-        ImageIcon originalIcon = new ImageIcon("src/main/java/org/example/MusicManagement/assets/icon/add.png");
+        // Panel to hold the song name label at the left
+        JPanel leftPanel = new JPanel();
+        leftPanel.setOpaque(false);
+        leftPanel.add(songNameLabel);
 
-        // Resize the icon to a smaller size (e.g., 24x24 pixels)
-        ImageIcon scaledIcon = new ImageIcon(originalIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH));
-        JButton addButton = new JButton(scaledIcon);
+        // Initialize pause and resume buttons
+        pauseButton = new JButton("Pause");
+        resumeButton = new JButton("Resume");
 
-        // Set button to be transparent
-        addButton.setContentAreaFilled(false);
-        addButton.setBorderPainted(false);
-        addButton.setFocusPainted(false);
+        // Customize buttons (optional)
+        pauseButton.setBackground(new Color(63, 81, 191));
+        pauseButton.setForeground(Color.WHITE);
+        resumeButton.setBackground(new Color(63, 81, 191));
+        resumeButton.setForeground(Color.WHITE);
 
-        // Add button to footer at the bottom-right
-        add(addButton, BorderLayout.SOUTH);  // Position at the bottom-right corner
+        // Initially, show only the pause button
+        resumeButton.setVisible(false);
 
-        // Button action
-        addButton.addActionListener(e -> {
-            // Create panel for inputs
-            JPanel panel = new JPanel(new GridLayout(4, 2));
+        // Panel to hold the buttons at the right
+        JPanel rightPanel = new JPanel();
+        rightPanel.setOpaque(false);
+        rightPanel.add(pauseButton);
+        rightPanel.add(resumeButton);
 
-            // Create text fields for songName, artistName, album, and pathSong
-            JTextField songNameField = new JTextField();
-            JTextField artistNameField = new JTextField();
-            JTextField albumField = new JTextField();
-            JTextField pathSongField = new JTextField();
+        // Add panels to the footer (song name on the left, buttons on the right)
+        add(leftPanel, BorderLayout.WEST);
+        add(rightPanel, BorderLayout.EAST);
 
-            // Add components to the panel
-            panel.add(new JLabel("Song Name:"));
-            panel.add(songNameField);
-            panel.add(new JLabel("Artist Name:"));
-            panel.add(artistNameField);
-            panel.add(new JLabel("Album Name:"));
-            panel.add(albumField);
-            panel.add(new JLabel("Path to Song:"));
-            panel.add(pathSongField);
+        // Add actions for the buttons
+        pauseButton.addActionListener(e -> {
+            musicPlayer.pauseAudio();
+            pauseButton.setVisible(false); // Hide pause button
+            resumeButton.setVisible(true); // Show resume button
+        });
 
-            // Show dialog for input
-            int option = JOptionPane.showConfirmDialog(this, panel, "Enter Song Details", JOptionPane.OK_CANCEL_OPTION);
-
-            // If user presses OK
-            if (option == JOptionPane.OK_OPTION) {
-                // Get data from text fields
-                String songName = songNameField.getText();
-                String artistName = artistNameField.getText();
-                String album = albumField.getText();
-                String pathSong = pathSongField.getText();
-
-                // Check if all fields are filled
-                if (!songName.isEmpty() && !artistName.isEmpty() && !album.isEmpty() && !pathSong.isEmpty()) {
-                    // Call addMusic method from controller
-                    Music music = new Music(songName, artistName, album, pathSong);
-                    this.musicController.addMusic(music);
-                } else {
-                    // If fields are empty, show error message
-                    JOptionPane.showMessageDialog(this, "Please fill in all fields!", "Input Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
+        resumeButton.addActionListener(e -> {
+            musicPlayer.resumeAudio();
+            resumeButton.setVisible(false); // Hide resume button
+            pauseButton.setVisible(true);  // Show pause button
         });
     }
+
+    public Footer(){
+        setLayout(new BorderLayout());
+        setOpaque(false);  // No background color, transparent footer
+    }
+
 }
