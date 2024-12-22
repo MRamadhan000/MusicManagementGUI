@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class Body extends JPanel {
     private ArrayList<Music> arrMusic; // Menyimpan daftar musik
     private MusicController musicController;
-    public String targetSongPlay;
 
     public Body(MusicController controller, ArrayList<Music> arrMusic) {
         this.arrMusic = arrMusic;

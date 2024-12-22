@@ -1,19 +1,13 @@
 package org.example.MusicManagement.model;
 
-import javazoom.jl.decoder.Bitstream;
-import javazoom.jl.decoder.Header;
 import javazoom.jl.player.Player;
-
 import javax.swing.*;
 import java.io.FileInputStream;
-import java.io.InputStream;
-
 public class MusicPlayer {
     private Player player;
     private Thread playbackThread;
     private boolean isPlaying = false;
     private boolean isPaused = false;
-
     private String currentFilePath;
     private long pauseLocation = 0;
     private long totalSongLength = 0;
@@ -98,13 +92,5 @@ public class MusicPlayer {
                 System.out.println("Error resuming audio: " + e.getMessage());
             }
         }
-    }
-
-    public boolean isPlaying() {
-        return isPlaying;
-    }
-
-    public boolean isPaused() {
-        return isPaused;
     }
 }

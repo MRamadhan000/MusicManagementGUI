@@ -68,6 +68,10 @@ public class MusicController {
     public boolean updateMusic(String targetSongName, String newSongName, String newArtistName, String newAlbum, String newPathSong) {
         for (Music music : arrMusic) {
             if (music.getSongName().equalsIgnoreCase(targetSongName)) {
+                String oldNameSong = music.getSongName();
+                String oldArtistName = music.getArtistName();
+                String oldAlbum = music.getAlbum();
+                String oldPathSong = music.getPathSong();
                 music.setSongName(newSongName);
                 music.setArtistName(newArtistName);
                 music.setAlbum(newAlbum);
@@ -80,9 +84,16 @@ public class MusicController {
                     setUpBody();
                 }
 
-                if(currentMusic.equalsIgnoreCase(targetSongName))
-                    mainFrame.setFooter(new Footer(musicPlayer,newSongName));
-                    // Return the result of the database update
+                if (currentMusic.equalsIgnoreCase(targetSongName)){
+                    if (oldPathSong.equalsIgnoreCase(newPathSong)){
+                        if (!oldNameSong.equalsIgnoreCase(newSongName) || !oldArtistName.equalsIgnoreCase(newArtistName) || !oldAlbum.equalsIgnoreCase(newAlbum))
+                            mainFrame.setFooter(new Footer(musicPlayer, newSongName));
+                    }else{
+                        mainFrame.setFooter(new Footer());
+                        musicPlayer.pauseAudio();
+                    }
+                    currentMusic = newSongName;
+                }
                 return dbUpdated;
             }
         }
@@ -97,19 +108,21 @@ public class MusicController {
         }
     }
 
-    public boolean deleteMusic(String songName) {
+    public boolean deleteMusic(String targetSongName) {
         // Step 1: Check if the song exists in the array
         for (Music music : arrMusic) {
-            if (music.getSongName().equalsIgnoreCase(songName)) {
+            if (music.getSongName().equalsIgnoreCase(targetSongName)) {
                 // Step 2: Remove the song from the array
                 arrMusic.remove(music);
 
                 // Step 3: Call the deleteToDB method to delete the song from the database
-                if (DB.deleteToDB(songName)) {
+                if (DB.deleteToDB(targetSongName)) {
                     System.out.println("Song successfully removed from database.");
                     setUpBody();
-
-
+                    if(currentMusic.equalsIgnoreCase(targetSongName)) {
+                        musicPlayer.pauseAudio();
+                        mainFrame.setFooter(new Footer());
+                    }
                     return true; // Return true if deletion from both array and DB was successful
                 } else {
                     System.out.println("Failed to delete the song from database.");

@@ -8,7 +8,6 @@ public class MainFrame extends JFrame {
     private JPanel header;
     private JScrollPane scrollBody; // Ganti body menjadi JScrollPane
     private JPanel footer;
-
     public MainFrame() {
         setTitle("Music Management App");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
