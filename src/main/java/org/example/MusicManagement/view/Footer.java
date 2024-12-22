@@ -1,9 +1,6 @@
 package org.example.MusicManagement.view;
 
-import org.example.MusicManagement.Controller.MusicController;
-import org.example.MusicManagement.model.Music;
 import org.example.MusicManagement.model.MusicPlayer;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -12,6 +9,13 @@ public class Footer extends JPanel {
     private JButton pauseButton;   // Button to pause the music
     private JButton resumeButton;  // Button to resume the music
 
+    // footer when music is not playing
+    public Footer(){
+        setLayout(new BorderLayout());
+        setOpaque(false);  // No background color, transparent footer
+    }
+
+    // footer when music is playing
     public Footer(MusicPlayer musicPlayer, String songName) {
         // Set layout and make the panel transparent (no background)
         setLayout(new BorderLayout());
@@ -50,23 +54,16 @@ public class Footer extends JPanel {
         add(leftPanel, BorderLayout.WEST);
         add(rightPanel, BorderLayout.EAST);
 
-        // Add actions for the buttons
         pauseButton.addActionListener(e -> {
             musicPlayer.pauseAudio();
-            pauseButton.setVisible(false); // Hide pause button
-            resumeButton.setVisible(true); // Show resume button
+            pauseButton.setVisible(false);
+            resumeButton.setVisible(true);
         });
 
         resumeButton.addActionListener(e -> {
             musicPlayer.resumeAudio();
-            resumeButton.setVisible(false); // Hide resume button
-            pauseButton.setVisible(true);  // Show pause button
+            resumeButton.setVisible(false);
+            pauseButton.setVisible(true);
         });
     }
-
-    public Footer(){
-        setLayout(new BorderLayout());
-        setOpaque(false);  // No background color, transparent footer
-    }
-
 }

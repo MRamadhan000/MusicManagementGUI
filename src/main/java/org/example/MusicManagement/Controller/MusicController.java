@@ -12,40 +12,42 @@ import java.util.ArrayList;
 public class MusicController {
     private ArrayList<Music> arrMusic;
     private MainFrame mainFrame;
-    private Body body; // Referensi ke Body
+    private Body body;
     private MusicPlayer musicPlayer;
     private String currentMusic = "";
     private String nextMusic = "";
 
     public MusicController() {
-        // Inisialisasi view utama
+        // initialize main view
         mainFrame = new MainFrame();
         arrMusic = DB.getDataDB();
         musicPlayer = new MusicPlayer();
-        // Load data atau setup awal
+
+        // Load view
         setupView();
     }
     private void setupView() {
-        // Panggil bagian view seperti Header, Body, Footer
+        // call the view section: Header, Body and Footer
         mainFrame.setHeader(new Header(this));
         setUpBody();
         mainFrame.setFooter(new Footer());
     }
 
-    //targeSongPlay = path
-    public void startPlayMusic(String targetSongPath,String songName){
+    public void startPlayMusic(String targetSongPath,String newSongName){
         String source = "src/main/java/org/example/MusicManagement/assets/music/" + targetSongPath + ".mp3";
-        this.nextMusic = songName;
+        this.nextMusic = newSongName;
+
+        // check if there is still anything playing
         if (currentMusic != null) {
-            currentMusic = songName;
+            currentMusic = newSongName;
             musicPlayer.stopAudio();
             musicPlayer.playAudio(source);
-            mainFrame.setFooter(new Footer(musicPlayer,songName));
+            mainFrame.setFooter(new Footer(musicPlayer,newSongName));
             this.nextMusic = null;
         }else{
             musicPlayer.playAudio(nextMusic);
             this.currentMusic = targetSongPath;
-            mainFrame.setFooter(new Footer(musicPlayer,songName));
+            mainFrame.setFooter(new Footer(musicPlayer,newSongName));
             this.nextMusic = null;
         }
     }
@@ -54,12 +56,16 @@ public class MusicController {
     }
 
     public void addMusic(Music music) {
-        arrMusic.add(music); // Menambahkan data ke list
+        // add data to arraylist
+        arrMusic.add(music);
         System.out.println("Music added: " + music.getSongName() + " in arrayList");
+
+        // add data to database
         DB.addDataToDB(music);
         setUpBody();
     }
 
+    // reload body after making changes to list and db
     private void setUpBody() {
         body = new Body(this,arrMusic);
         mainFrame.setBody(body);
@@ -78,12 +84,15 @@ public class MusicController {
                 music.setPathSong(newPathSong);
                 System.out.println("Music updated: " + music);
 
-                // Call DB.editToDB with the new song name
+                // Edit data to db
                 boolean dbUpdated = DB.editToDB(targetSongName,newSongName,newArtistName,newAlbum,newPathSong);
+
+                // Reload body
                 if (dbUpdated){
                     setUpBody();
                 }
 
+                // Check if the music being played is the same as the target and reload the footer.
                 if (currentMusic.equalsIgnoreCase(targetSongName)){
                     if (oldPathSong.equalsIgnoreCase(newPathSong)){
                         if (!oldNameSong.equalsIgnoreCase(newSongName) || !oldArtistName.equalsIgnoreCase(newArtistName) || !oldAlbum.equalsIgnoreCase(newAlbum))
@@ -109,29 +118,31 @@ public class MusicController {
     }
 
     public boolean deleteMusic(String targetSongName) {
-        // Step 1: Check if the song exists in the array
         for (Music music : arrMusic) {
             if (music.getSongName().equalsIgnoreCase(targetSongName)) {
-                // Step 2: Remove the song from the array
                 arrMusic.remove(music);
 
-                // Step 3: Call the deleteToDB method to delete the song from the database
+                // Delete data to db
                 if (DB.deleteToDB(targetSongName)) {
                     System.out.println("Song successfully removed from database.");
+
+                    // Reload ulang body
                     setUpBody();
+
+                    // Reload the regular footer if the song being played is deleted
                     if(currentMusic.equalsIgnoreCase(targetSongName)) {
                         musicPlayer.pauseAudio();
                         mainFrame.setFooter(new Footer());
                     }
-                    return true; // Return true if deletion from both array and DB was successful
+                    return true;
                 } else {
                     System.out.println("Failed to delete the song from database.");
-                    return false; // Return false if deletion from DB failed
+                    return false;
                 }
             }
         }
         System.out.println("Song not found in array.");
-        return false; // Return false if song is not found in the array
+        return false;
     }
     private void showDataList(){
         for (Music music : arrMusic){

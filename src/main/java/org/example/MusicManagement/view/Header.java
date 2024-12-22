@@ -61,19 +61,15 @@ public class Header extends JPanel {
 
             // If user presses OK
             if (option == JOptionPane.OK_OPTION) {
-                // Get data from text fields
                 String songName = songNameField.getText();
                 String artistName = artistNameField.getText();
                 String album = albumField.getText();
                 String pathSong = pathSongField.getText();
 
-                // Check if all fields are filled
                 if (!songName.isEmpty() && !artistName.isEmpty() && !album.isEmpty() && !pathSong.isEmpty()) {
-                    // Call addMusic method from controller
                     Music music = new Music(songName, artistName, album, pathSong);
                     this.musicController.addMusic(music);
                 } else {
-                    // If fields are empty, show error message
                     JOptionPane.showMessageDialog(this, "Please fill in all fields!", "Input Error", JOptionPane.ERROR_MESSAGE);
                 }
             }

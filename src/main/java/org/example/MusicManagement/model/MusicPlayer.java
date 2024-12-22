@@ -40,7 +40,6 @@ public class MusicPlayer {
             JOptionPane.showMessageDialog(null, "Music not found: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             System.out.println("Error initializing audio: " + e.getMessage());
         }
-        System.out.println("HELLO");
     }
 
     public void stopAudio() {

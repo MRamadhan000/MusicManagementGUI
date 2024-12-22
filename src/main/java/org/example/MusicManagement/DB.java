@@ -8,31 +8,41 @@ public class DB {
     static private final String USERNAME = "root";
     static private final String PASSWORD ="";
     static private final String TABLENAME ="music";
-
-    // Metode untuk mendapatkan koneksi
-    private static Connection getConnection() throws SQLException, ClassNotFoundException {
-        // Load JDBC driver untuk MySQL
-        Class.forName("com.mysql.cj.jdbc.Driver");
-
-        // Membuat dan mengembalikan koneksi ke database
-        return DriverManager.getConnection(URL, USERNAME, PASSWORD);
+    private static Connection conn;
+    public static Connection getConnection() throws SQLException, ClassNotFoundException {
+        if (conn == null || conn.isClosed()) {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        }
+        return conn;
+    }
+    public static void closeSession() {
+        if (conn != null) {
+            try {
+                conn.close();
+                System.out.println("Database session closed.");
+            } catch (SQLException e) {
+                System.out.println("Failed to close database session.");
+                e.printStackTrace();
+            }
+        }
     }
 
     public static ArrayList<Music> getDataDB() {
-        ArrayList<Music> arrMusic = new ArrayList<>(); // ArrayList untuk menyimpan data
+        ArrayList<Music> arrMusic = new ArrayList<>();
 
-        try (Connection conn = getConnection(); // Memanggil metode getConnection
+        try (Connection conn = getConnection();
              Statement stmt = conn.createStatement();
+
+             // Execute SELECT query
              ResultSet rs = stmt.executeQuery("SELECT artistName, songName, album, pathSong FROM " + TABLENAME)) {
 
-            // Menampilkan hasil query
             while (rs.next()) {
                 String artistName = rs.getString("artistName");
                 String songName = rs.getString("songName");
                 String album = rs.getString("album");
                 String pathSong = rs.getString("pathSong");
 
-                // Membuat objek Music dan menambahkannya ke daftar
                 Music music = new Music(songName, artistName, album, pathSong);
                 arrMusic.add(music);
             }
@@ -43,24 +53,25 @@ public class DB {
         } catch (SQLException e) {
             System.out.println("Connection failure!");
             e.printStackTrace();
+        }finally {
+            closeSession();
         }
         return arrMusic;
     }
 
-    // Metode untuk menambahkan data ke database
     public static void addDataToDB(Music music) {
         String sql = "INSERT INTO " + TABLENAME + " (artistName, songName, album, pathSong) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = getConnection(); // Memanggil metode getConnection
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            // Mengatur parameter pada query
+            // Set the parameters for the UPDATE query
             pstmt.setString(1, music.getArtistName());
             pstmt.setString(2, music.getSongName());
             pstmt.setString(3, music.getAlbum());
             pstmt.setString(4, music.getPathSong());
 
-            // Menjalankan query
+            // Execute INSERT query
             int rowsInserted = pstmt.executeUpdate();
             if (rowsInserted > 0) {
                 System.out.println("Data berhasil ditambahkan ke database!");
@@ -72,10 +83,11 @@ public class DB {
         } catch (SQLException e) {
             System.out.println("Connection failure!");
             e.printStackTrace();
+        }finally {
+            closeSession();
         }
     }
     public static boolean editToDB(String targetSongName, String newSongName, String newArtistName, String album, String pathSong) {
-        // Step 1: Check if the song with targetSongName exists in the database
         String selectQuery = "SELECT songName FROM " + TABLENAME + " WHERE songName = ?";
 
         try (Connection conn = getConnection();
@@ -87,7 +99,7 @@ public class DB {
             // Execute the SELECT query
             ResultSet rs = selectStmt.executeQuery();
 
-            // Step 2: If the song exists, proceed with the update
+            // If the song exists, proceed with the update
             if (rs.next()) {
                 String updateQuery = "UPDATE " + TABLENAME + " SET songName = ?, artistName = ?, album = ?, pathSong = ? WHERE songName = ?";
 
@@ -112,7 +124,7 @@ public class DB {
 
             } else {
                 System.out.println("No song found with the name: " + targetSongName);
-                return false; // Song not found
+                return false;
             }
 
         } catch (ClassNotFoundException e) {
@@ -121,16 +133,16 @@ public class DB {
         } catch (SQLException e) {
             System.out.println("Connection failure!");
             e.printStackTrace();
+        }finally {
+            closeSession();
         }
-
-        return false; // If any exception occurs or the song is not found
+        return false;
     }
 
-    // Method to delete a song from the database
     public static boolean deleteToDB(String songName) {
         String sql = "DELETE FROM " + TABLENAME + " WHERE songName = ?";
 
-        try (Connection conn = getConnection(); // Calling the getConnection method
+        try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             // Set the parameter for the SQL query
@@ -140,10 +152,10 @@ public class DB {
             int rowsDeleted = pstmt.executeUpdate();
             if (rowsDeleted > 0) {
                 System.out.println("Song successfully deleted from database.");
-                return true; // Return true if the song is successfully deleted
+                return true;
             } else {
                 System.out.println("No song found with the name: " + songName);
-                return false; // Return false if no song with that name was found
+                return false;
             }
 
         } catch (ClassNotFoundException e) {
@@ -152,8 +164,10 @@ public class DB {
         } catch (SQLException e) {
             System.out.println("Connection failure!");
             e.printStackTrace();
+        }finally {
+            closeSession();
         }
 
-        return false; // Return false if an error occurs or if the song is not found
+        return false;
     }
 }

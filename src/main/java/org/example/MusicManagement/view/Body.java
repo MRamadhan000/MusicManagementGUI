@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class Body extends JPanel {
-    private ArrayList<Music> arrMusic; // Menyimpan daftar musik
+    private ArrayList<Music> arrMusic;
     private MusicController musicController;
 
     public Body(MusicController controller, ArrayList<Music> arrMusic) {
@@ -112,7 +112,6 @@ public class Body extends JPanel {
                 // Logika saat card diklik
                 System.out.println("Selected Music: " + music.getPathSong() + ", song name: " + music.getSongName());
                 musicController.startPlayMusic(music.getPathSong(), music.getSongName());
-                // Anda bisa menambahkan aksi lain yang diinginkan ketika kartu dipilih
             }
         });
 
