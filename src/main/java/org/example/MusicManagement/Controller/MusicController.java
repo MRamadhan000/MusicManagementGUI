@@ -33,7 +33,8 @@ public class MusicController {
     private void setupView() {
         // call the view section: Header, Body and Footer
         mainFrame.setHeader(new Header(this));
-        setUpBody();
+//        setUpBody();
+        mainFrame.setBody(new Body(this));
         mainFrame.setFooter(new Footer());
     }
 
@@ -66,7 +67,9 @@ public class MusicController {
 
         // add data to database
         db.addDataToDB(music);
-        setUpBody();
+//        setUpBody();
+        mainFrame.setBody(new Body(this));
+
     }
 
     // reload body after making changes to list and db
@@ -93,7 +96,9 @@ public class MusicController {
 
                 // Reload body
                 if (dbUpdated){
-                    setUpBody();
+//                    setUpBody();
+                    mainFrame.setBody(new Body(this));
+
                 }
 
                 // Check if the music being played is the same as the target and reload the footer.
@@ -124,7 +129,9 @@ public class MusicController {
                     System.out.println("Song successfully removed from database.");
 
                     // Reload ulang body
-                    setUpBody();
+//                    setUpBody();
+                    mainFrame.setBody(new Body(this));
+
 
                     // Reload the regular footer if the song being played is deleted
                     if(currentMusic.equalsIgnoreCase(targetSongName)) {
