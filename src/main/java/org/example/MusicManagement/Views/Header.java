@@ -9,7 +9,7 @@ import java.awt.*;
 
 public class Header extends JPanel {
     private MusicController musicController;
-    private final Color BGCOLOR = Color.decode("#0d1321");
+    private final Color BGCOLOR = Color.decode("#212529");
     private final Color TEXTCOLOR = Color.decode("#e0e1dd");
     public Header(MusicController musicController) {
         this.musicController = musicController;

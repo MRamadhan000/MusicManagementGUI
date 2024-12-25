@@ -10,7 +10,7 @@ public class Footer extends JPanel {
     private JLabel songNameLabel;  // JLabel to display the current song name
     private JButton pauseButton;   // Button to pause the music
     private JButton resumeButton;  // Button to resume the music
-    private final Color BGCOLOR = Color.decode("#0d1321");
+    private final Color BGCOLOR = Color.decode("#212529");
     private final Color TEXTCOLOR = Color.decode("#e0e1dd");
 
     // footer when music is not playing

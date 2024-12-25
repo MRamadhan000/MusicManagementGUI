@@ -13,6 +13,11 @@ public class Body extends JPanel {
     private ArrayList<Music> arrMusic;
     private MusicController musicController;
     private final String BASEPATHIMAGE = "src/main/java/org/example/MusicManagement/publics/img/";
+    private final Color BGCOLOR = Color.decode("#212529");
+    private final Color BGCOLOR2 = Color.decode("#343a40");
+
+    private final Color TEXTCOLOR = Color.decode("#e0e1dd");
+    private final Color TEXTCOLOR2 = Color.decode("#e9ecef");
 
     public Body(MusicController controller) {
         this.musicController = controller;
@@ -20,7 +25,7 @@ public class Body extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); // Mengatur layout vertikal
         setBorder(new EmptyBorder(20, 20, 20, 20)); // Padding: top, left, bottom, right
-
+        setBackground(BGCOLOR);
         setOpaque(true);
         displayMusicList();
     }
@@ -52,7 +57,7 @@ public class Body extends JPanel {
 
         // Mengatur agar cardPanel memiliki background putih
         cardPanel.setOpaque(true); // Set agar background panel terlihat (misal berwarna putih)
-        cardPanel.setBackground(Color.WHITE); // Warna latar belakang putih
+        cardPanel.setBackground(BGCOLOR2); // Warna latar belakang putih
 
         // Set fixed width and height for the card
         cardPanel.setPreferredSize(new Dimension(500, 120)); // Set width to 400px and height to 120px
@@ -63,6 +68,8 @@ public class Body extends JPanel {
         if (albumImage != null) {
             // Align the album image to the left
             JPanel imagePanel = new JPanel();
+            imagePanel.setBackground(BGCOLOR2);
+            imagePanel.setOpaque(true);
             imagePanel.setLayout(new FlowLayout(FlowLayout.LEFT)); // Align to left
             imagePanel.add(albumImage);
             cardPanel.add(imagePanel, BorderLayout.WEST); // Menambahkan gambar di sebelah kiri
@@ -70,17 +77,19 @@ public class Body extends JPanel {
 
         // Panel untuk menampilkan teks informasi musik
         JPanel textPanel = new JPanel();
+        textPanel.setBorder(new EmptyBorder(20, 20, 20, 10)); // Padding: top, left, bottom, right
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS)); // Layout vertikal
         textPanel.setAlignmentX(Component.LEFT_ALIGNMENT); // Align text to the left
+        textPanel.setBackground(BGCOLOR2);
         textPanel.setOpaque(true);
 
         JLabel songNameLabel = new JLabel(music.getSongName());
-        songNameLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Set font untuk song name
-        songNameLabel.setForeground(Color.BLACK); // Set warna teks
+        songNameLabel.setFont(new Font("Cambria", Font.BOLD, 20)); // Set font untuk song name
+        songNameLabel.setForeground(TEXTCOLOR); // Set warna teks
 
         JLabel artistNameLabel = new JLabel(music.getArtistName());
-        artistNameLabel.setFont(new Font("Arial", Font.ITALIC, 14)); // Set font untuk artist name
-        artistNameLabel.setForeground(Color.GRAY); // Set warna teks
+        artistNameLabel.setFont(new Font("Cambria", Font.ITALIC, 16)); // Set font untuk artist name
+        artistNameLabel.setForeground(TEXTCOLOR2); // Set warna teks
 
         // Menambahkan label ke textPanel
         textPanel.add(songNameLabel);
@@ -90,12 +99,10 @@ public class Body extends JPanel {
 
         // Panel untuk tombol Update dan Delete
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setBackground(Color.ORANGE);
+        buttonPanel.setBackground(BGCOLOR2);
+        buttonPanel.setOpaque(true);
 
-//        Menggunakan GridLayout untuk memastikan tombol memiliki panjang yang sama
         buttonPanel.setLayout(new GridLayout(2, 1, 5, 5)); // 2 baris, 1 kolom, 5px horizontal dan vertical gap
-
-//        Menambahkan padding ke dalam buttonPanel dengan EmptyBorder
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(15, 12, 15, 12)); // 10px padding di semua sisi
 
 //        Membuat tombol
@@ -103,6 +110,14 @@ public class Body extends JPanel {
         updateButton.setPreferredSize(new Dimension(100, 50));
         JButton deleteButton = new JButton("Delete");
         deleteButton.setPreferredSize(new Dimension(100, 50));
+
+        updateButton.setBackground(BGCOLOR); // Set background to BGCOLOR
+        updateButton.setForeground(TEXTCOLOR); // Set text color to TEXTCOLORHH1
+        updateButton.setBorderPainted(false); // Remove the border
+
+        deleteButton.setBackground(BGCOLOR); // Set background to BGCOLOR
+        deleteButton.setForeground(TEXTCOLOR); // Set text color to TEXTCOLORHH1
+        deleteButton.setBorderPainted(false); // Remove the border
 
 //        Menambahkan tombol ke dalam panel
         buttonPanel.add(updateButton);
