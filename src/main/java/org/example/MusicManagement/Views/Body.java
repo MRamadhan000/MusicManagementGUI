@@ -23,7 +23,6 @@ public class Body extends JPanel {
 
         setOpaque(true);
         displayMusicList();
-
     }
 
     private void displayMusicList() {
