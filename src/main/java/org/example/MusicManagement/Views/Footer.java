@@ -1,6 +1,6 @@
-package org.example.MusicManagement.view;
+package org.example.MusicManagement.Views;
 
-import org.example.MusicManagement.model.MusicPlayer;
+import org.example.MusicManagement.Models.MusicPlayer;
 import javax.swing.*;
 import java.awt.*;
 

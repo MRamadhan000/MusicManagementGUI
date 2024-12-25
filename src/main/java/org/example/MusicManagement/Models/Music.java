@@ -1,4 +1,4 @@
-package org.example.MusicManagement.model;
+package org.example.MusicManagement.Models;
 
 public class Music {
     private String songName;

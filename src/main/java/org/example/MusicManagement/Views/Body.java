@@ -1,7 +1,7 @@
-package org.example.MusicManagement.view;
+package org.example.MusicManagement.Views;
 
 import org.example.MusicManagement.Controller.MusicController;
-import org.example.MusicManagement.model.Music;
+import org.example.MusicManagement.Models.Music;
 
 import javax.swing.*;
 import java.awt.*;

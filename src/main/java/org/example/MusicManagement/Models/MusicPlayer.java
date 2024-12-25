@@ -1,4 +1,4 @@
-package org.example.MusicManagement.model;
+package org.example.MusicManagement.Models;
 
 import javazoom.jl.player.Player;
 import javax.swing.*;

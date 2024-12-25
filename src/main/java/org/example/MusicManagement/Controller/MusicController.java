@@ -1,12 +1,12 @@
 package org.example.MusicManagement.Controller;
 
-import org.example.MusicManagement.DB;
-import org.example.MusicManagement.model.Music;
-import org.example.MusicManagement.model.MusicPlayer;
-import org.example.MusicManagement.view.Body;
-import org.example.MusicManagement.view.Footer;
-import org.example.MusicManagement.view.Header;
-import org.example.MusicManagement.view.MainFrame;
+import org.example.MusicManagement.Database;
+import org.example.MusicManagement.Models.Music;
+import org.example.MusicManagement.Models.MusicPlayer;
+import org.example.MusicManagement.Views.Body;
+import org.example.MusicManagement.Views.Footer;
+import org.example.MusicManagement.Views.Header;
+import org.example.MusicManagement.Views.MainFrame;
 
 import java.util.ArrayList;
 public class MusicController {
@@ -16,11 +16,14 @@ public class MusicController {
     private MusicPlayer musicPlayer;
     private String currentMusic = "";
     private String nextMusic = "";
+    private Database db;
 
     public MusicController() {
+        // initilize db
+        db = new Database();
         // initialize main view
         mainFrame = new MainFrame();
-        arrMusic = DB.getDataDB();
+        arrMusic = db.getDataDB();
         musicPlayer = new MusicPlayer();
 
         // Load view
@@ -61,7 +64,7 @@ public class MusicController {
         System.out.println("Music added: " + music.getSongName() + " in arrayList");
 
         // add data to database
-        DB.addDataToDB(music);
+        db.addDataToDB(music);
         setUpBody();
     }
 
@@ -85,7 +88,7 @@ public class MusicController {
                 System.out.println("Music updated: " + music);
 
                 // Edit data to db
-                boolean dbUpdated = DB.editToDB(targetSongName,newSongName,newArtistName,newAlbum,newPathSong);
+                boolean dbUpdated = db.editToDB(targetSongName,newSongName,newArtistName,newAlbum,newPathSong);
 
                 // Reload body
                 if (dbUpdated){
@@ -123,7 +126,7 @@ public class MusicController {
                 arrMusic.remove(music);
 
                 // Delete data to db
-                if (DB.deleteToDB(targetSongName)) {
+                if (db.deleteToDB(targetSongName)) {
                     System.out.println("Song successfully removed from database.");
 
                     // Reload ulang body

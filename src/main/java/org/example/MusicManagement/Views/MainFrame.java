@@ -1,4 +1,4 @@
-package org.example.MusicManagement.view;
+package org.example.MusicManagement.Views;
 
 import javax.swing.*;
 import java.awt.*;

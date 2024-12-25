@@ -1,15 +1,15 @@
 package org.example.MusicManagement;
-import org.example.MusicManagement.model.Music;
+import org.example.MusicManagement.Models.Music;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class DB {
+public class Database {
     static private final String URL = "jdbc:mysql://localhost:3306/musicLibrary";
     static private final String USERNAME = "root";
     static private final String PASSWORD ="";
     static private final String TABLENAME ="music";
     private static Connection conn;
-    public static Connection getConnection() throws SQLException, ClassNotFoundException {
+    public Connection getConnection() throws SQLException, ClassNotFoundException {
         if (conn == null || conn.isClosed()) {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
@@ -28,7 +28,7 @@ public class DB {
         }
     }
 
-    public static ArrayList<Music> getDataDB() {
+    public ArrayList<Music> getDataDB() {
         ArrayList<Music> arrMusic = new ArrayList<>();
 
         try (Connection conn = getConnection();
@@ -59,7 +59,7 @@ public class DB {
         return arrMusic;
     }
 
-    public static void addDataToDB(Music music) {
+    public void addDataToDB(Music music) {
         String sql = "INSERT INTO " + TABLENAME + " (artistName, songName, album, pathSong) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = getConnection(); // Memanggil metode getConnection
@@ -87,7 +87,7 @@ public class DB {
             closeSession();
         }
     }
-    public static boolean editToDB(String targetSongName, String newSongName, String newArtistName, String album, String pathSong) {
+    public boolean editToDB(String targetSongName, String newSongName, String newArtistName, String album, String pathSong) {
         String selectQuery = "SELECT songName FROM " + TABLENAME + " WHERE songName = ?";
 
         try (Connection conn = getConnection();
@@ -139,7 +139,7 @@ public class DB {
         return false;
     }
 
-    public static boolean deleteToDB(String songName) {
+    public boolean deleteToDB(String songName) {
         String sql = "DELETE FROM " + TABLENAME + " WHERE songName = ?";
 
         try (Connection conn = getConnection();
