@@ -18,6 +18,7 @@ public class MusicController {
     private String nextMusic = "";
     private Database db;
     private final String BASEPATHSONG = "src/main/java/org/example/MusicManagement/publics/music/";
+    private Music musicNow;
 
     public MusicController() {
         // initilize db
@@ -26,16 +27,21 @@ public class MusicController {
         mainFrame = new MainFrame();
         arrMusic = db.getDataDB();
         musicPlayer = new MusicPlayer();
+        musicNow = null;
 
         // Load view
         setupView();
     }
+
     private void setupView() {
         // call the view section: Header, Body and Footer
         mainFrame.setHeader(new Header(this));
 //        setUpBody();
         mainFrame.setBody(new Body(this));
         mainFrame.setFooter(new Footer());
+    }
+    public void showApp() {
+        mainFrame.setVisible(true);
     }
 
     public void startPlayMusic(String targetSongPath,String newSongName){
@@ -45,19 +51,29 @@ public class MusicController {
         // check if there is still anything playing
         if (currentMusic != null) {
             currentMusic = newSongName;
-            musicPlayer.stopAudio();
-            musicPlayer.playAudio(source);
-            mainFrame.setFooter(new Footer(musicPlayer,newSongName));
+            this.stopAudio();
+            this.startPlayAudio(source);
+            mainFrame.setFooter(new Footer(this,newSongName));
             this.nextMusic = null;
         }else{
-            musicPlayer.playAudio(nextMusic);
+            this.startPlayAudio(source);
             this.currentMusic = targetSongPath;
-            mainFrame.setFooter(new Footer(musicPlayer,newSongName));
+            mainFrame.setFooter(new Footer(this,newSongName));
             this.nextMusic = null;
         }
     }
-    public void showApp() {
-        mainFrame.setVisible(true);
+
+    public void startPlayAudio(String source){
+        musicPlayer.playAudio(source);
+    }
+    public void stopAudio(){
+        musicPlayer.stopAudio();
+    }
+    public void pauseAudio(){
+        musicPlayer.pauseAudio();
+    }
+    public void resumeAudio(){
+        musicPlayer.resumeAudio();
     }
 
     public void addMusic(Music music) {
@@ -70,13 +86,6 @@ public class MusicController {
 //        setUpBody();
         mainFrame.setBody(new Body(this));
     }
-
-    // reload body after making changes to list and db
-    private void setUpBody() {
-        body = new Body(this);
-        mainFrame.setBody(body);
-    }
-
     public boolean updateMusic(String targetSongName, String newSongName, String newArtistName, String newAlbum, String newPathSong) {
         for (Music music : arrMusic) {
             if (music.getSongName().equalsIgnoreCase(targetSongName)) {
@@ -97,17 +106,16 @@ public class MusicController {
                 if (dbUpdated){
 //                    setUpBody();
                     mainFrame.setBody(new Body(this));
-
                 }
 
                 // Check if the music being played is the same as the target and reload the footer.
                 if (currentMusic.equalsIgnoreCase(targetSongName)){
                     if (oldPathSong.equalsIgnoreCase(newPathSong)){
                         if (!oldNameSong.equalsIgnoreCase(newSongName) || !oldArtistName.equalsIgnoreCase(newArtistName) || !oldAlbum.equalsIgnoreCase(newAlbum))
-                            mainFrame.setFooter(new Footer(musicPlayer, newSongName));
+                            mainFrame.setFooter(new Footer(this, newSongName));
                     }else{
                         mainFrame.setFooter(new Footer());
-                        musicPlayer.pauseAudio();
+                        this.stopAudio();
                     }
                     currentMusic = newSongName;
                 }
@@ -131,10 +139,9 @@ public class MusicController {
 //                    setUpBody();
                     mainFrame.setBody(new Body(this));
 
-
                     // Reload the regular footer if the song being played is deleted
                     if(currentMusic.equalsIgnoreCase(targetSongName)) {
-                        musicPlayer.pauseAudio();
+                        this.stopAudio();
                         mainFrame.setFooter(new Footer());
                     }
                     return true;
@@ -152,7 +159,6 @@ public class MusicController {
             System.out.println("Songname : " + music.getSongName() + " Artist Name : " + music.getArtistName() + " Album : " + music.getAlbum() + " Path Song : " + music.getPathSong() );
         }
     }
-
     public ArrayList<Music> getArrMusic() {
         return arrMusic;
     }

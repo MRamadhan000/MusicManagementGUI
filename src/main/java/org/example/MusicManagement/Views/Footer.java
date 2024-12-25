@@ -1,5 +1,6 @@
 package org.example.MusicManagement.Views;
 
+import org.example.MusicManagement.Controller.MusicController;
 import org.example.MusicManagement.Models.MusicPlayer;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -12,7 +13,6 @@ public class Footer extends JPanel {
     private final Color BGCOLOR = new Color(0x01161E);
     private final Color TEXTCOLOR = Color.decode("#e0e1dd");
 
-
     // footer when music is not playing
     public Footer(){
         setLayout(new BorderLayout());
@@ -21,7 +21,7 @@ public class Footer extends JPanel {
     }
 
     // footer when music is playing
-    public Footer(MusicPlayer musicPlayer, String songName) {
+    public Footer(MusicController musicController, String songName) {
         // Set layout and make the panel transparent (no background)
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(10, 20, 10, 65)); // Padding: top, left, bottom, right
@@ -69,13 +69,13 @@ public class Footer extends JPanel {
         add(rightPanel, BorderLayout.EAST);
 
         pauseButton.addActionListener(e -> {
-            musicPlayer.pauseAudio();
+            musicController.pauseAudio();
             pauseButton.setVisible(false);
             resumeButton.setVisible(true);
         });
 
         resumeButton.addActionListener(e -> {
-            musicPlayer.resumeAudio();
+            musicController.resumeAudio();
             resumeButton.setVisible(false);
             pauseButton.setVisible(true);
         });
