@@ -17,6 +17,7 @@ public class MusicController {
     private String currentMusic = "";
     private String nextMusic = "";
     private Database db;
+    private final String BASEPATHSONG = "src/main/java/org/example/MusicManagement/publics/music/";
 
     public MusicController() {
         // initilize db
@@ -37,7 +38,7 @@ public class MusicController {
     }
 
     public void startPlayMusic(String targetSongPath,String newSongName){
-        String source = "src/main/java/org/example/MusicManagement/assets/music/" + targetSongPath + ".mp3";
+        String source = BASEPATHSONG + targetSongPath + ".mp3";
         this.nextMusic = newSongName;
 
         // check if there is still anything playing
@@ -70,7 +71,7 @@ public class MusicController {
 
     // reload body after making changes to list and db
     private void setUpBody() {
-        body = new Body(this,arrMusic);
+        body = new Body(this);
         mainFrame.setBody(body);
     }
 
@@ -113,13 +114,6 @@ public class MusicController {
         return false;
     }
 
-    public void setUpFooter(String songName){
-        if (songName.equalsIgnoreCase(currentMusic)) {
-            musicPlayer.pauseAudio();
-            mainFrame.setFooter(new Footer());
-        }
-    }
-
     public boolean deleteMusic(String targetSongName) {
         for (Music music : arrMusic) {
             if (music.getSongName().equalsIgnoreCase(targetSongName)) {
@@ -151,5 +145,9 @@ public class MusicController {
         for (Music music : arrMusic){
             System.out.println("Songname : " + music.getSongName() + " Artist Name : " + music.getArtistName() + " Album : " + music.getAlbum() + " Path Song : " + music.getPathSong() );
         }
+    }
+
+    public ArrayList<Music> getArrMusic() {
+        return arrMusic;
     }
 }

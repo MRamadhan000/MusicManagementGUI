@@ -11,10 +11,12 @@ import java.util.ArrayList;
 public class Body extends JPanel {
     private ArrayList<Music> arrMusic;
     private MusicController musicController;
+    private final String BASEPATHIMAGE = "src/main/java/org/example/MusicManagement/publics/img/";
 
-    public Body(MusicController controller, ArrayList<Music> arrMusic) {
-        this.arrMusic = arrMusic;
+    public Body(MusicController controller) {
         this.musicController = controller;
+        this.arrMusic = controller.getArrMusic();
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); // Mengatur layout vertikal
         displayMusicList();
     }
@@ -182,7 +184,7 @@ public class Body extends JPanel {
     private JLabel createAlbumImage(Music music) {
         String albumPath = music.getAlbum();
         if (albumPath != null && !albumPath.isEmpty()) {
-            String imagePath = "src/main/java/org/example/MusicManagement/assets/img/" + albumPath + ".jpg"; // Path for album image
+            String imagePath = BASEPATHIMAGE + albumPath + ".jpg"; // Path for album image
             File imageFile = new File(imagePath);
 
             // Check if the specific album image exists
@@ -194,7 +196,7 @@ public class Body extends JPanel {
         }
 
         // If the album image does not exist, load the default image
-        String defaultImagePath = "src/main/java/org/example/MusicManagement/assets/img/default.png";
+        String defaultImagePath = BASEPATHIMAGE + "default.png";
         File defaultImageFile = new File(defaultImagePath);
 
         // Check if the default image exists
