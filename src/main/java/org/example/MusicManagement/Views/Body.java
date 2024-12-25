@@ -4,6 +4,7 @@ import org.example.MusicManagement.Controller.MusicController;
 import org.example.MusicManagement.Models.Music;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
@@ -18,7 +19,11 @@ public class Body extends JPanel {
         this.arrMusic = controller.getArrMusic();
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); // Mengatur layout vertikal
+        setBorder(new EmptyBorder(20, 20, 20, 20)); // Padding: top, left, bottom, right
+
+        setOpaque(true);
         displayMusicList();
+
     }
 
     private void displayMusicList() {
@@ -46,6 +51,10 @@ public class Body extends JPanel {
         cardPanel.setLayout(new BorderLayout());
         cardPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Ruang kosong di dalam card
 
+        // Mengatur agar cardPanel memiliki background putih
+        cardPanel.setOpaque(true); // Set agar background panel terlihat (misal berwarna putih)
+        cardPanel.setBackground(Color.WHITE); // Warna latar belakang putih
+
         // Set fixed width and height for the card
         cardPanel.setPreferredSize(new Dimension(500, 120)); // Set width to 400px and height to 120px
         cardPanel.setMaximumSize(new Dimension(1500, 120)); // Ensure maximum size is the same
@@ -64,6 +73,7 @@ public class Body extends JPanel {
         JPanel textPanel = new JPanel();
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS)); // Layout vertikal
         textPanel.setAlignmentX(Component.LEFT_ALIGNMENT); // Align text to the left
+        textPanel.setOpaque(true);
 
         JLabel songNameLabel = new JLabel(music.getSongName());
         songNameLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Set font untuk song name
@@ -81,30 +91,36 @@ public class Body extends JPanel {
 
         // Panel untuk tombol Update dan Delete
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT)); // Layout tombol di sebelah kanan
+        buttonPanel.setBackground(Color.ORANGE);
 
-        // Tombol Update
+//        Menggunakan GridLayout untuk memastikan tombol memiliki panjang yang sama
+        buttonPanel.setLayout(new GridLayout(2, 1, 5, 5)); // 2 baris, 1 kolom, 5px horizontal dan vertical gap
+
+//        Menambahkan padding ke dalam buttonPanel dengan EmptyBorder
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(15, 12, 15, 12)); // 10px padding di semua sisi
+
+//        Membuat tombol
         JButton updateButton = new JButton("Update");
+        updateButton.setPreferredSize(new Dimension(100, 50));
+        JButton deleteButton = new JButton("Delete");
+        deleteButton.setPreferredSize(new Dimension(100, 50));
+
+//        Menambahkan tombol ke dalam panel
+        buttonPanel.add(updateButton);
+        buttonPanel.add(deleteButton);
+
+//        Menambahkan buttonPanel ke dalam cardPanel (di posisi kanan)
+        cardPanel.add(buttonPanel, BorderLayout.EAST);
+
+
         updateButton.addActionListener(e -> {
             updateAction(music, cardPanel);
         });
 
         // Tombol Delete
-        JButton deleteButton = new JButton("Delete");
         deleteButton.addActionListener(e -> {
             deleteAction(music, cardPanel);
         });
-
-        // Menambahkan tombol ke buttonPanel
-        buttonPanel.add(updateButton);
-        buttonPanel.add(deleteButton);
-
-        // Menambahkan buttonPanel ke kanan cardPanel
-        cardPanel.add(buttonPanel, BorderLayout.EAST);
-
-        // Mengatur agar cardPanel memiliki background putih
-        cardPanel.setOpaque(true); // Set agar background panel terlihat (misal berwarna putih)
-        cardPanel.setBackground(Color.WHITE); // Warna latar belakang putih
 
         // Menambahkan MouseListener ke panel, sehingga seluruh card bisa diklik
         cardPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Ubah kursor menjadi "tangan"

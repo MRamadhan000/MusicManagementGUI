@@ -69,7 +69,6 @@ public class MusicController {
         db.addDataToDB(music);
 //        setUpBody();
         mainFrame.setBody(new Body(this));
-
     }
 
     // reload body after making changes to list and db
