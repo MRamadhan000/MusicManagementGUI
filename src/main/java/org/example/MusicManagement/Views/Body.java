@@ -15,7 +15,6 @@ public class Body extends JPanel {
     private final String BASEPATHIMAGE = "src/main/java/org/example/MusicManagement/publics/img/";
     private final Color BGCOLOR = Color.decode("#212529");
     private final Color BGCOLOR2 = Color.decode("#343a40");
-
     private final Color TEXTCOLOR = Color.decode("#e0e1dd");
     private final Color TEXTCOLOR2 = Color.decode("#e9ecef");
 

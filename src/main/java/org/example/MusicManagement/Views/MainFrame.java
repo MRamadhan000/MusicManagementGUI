@@ -7,6 +7,8 @@ public class MainFrame extends JFrame {
     private JPanel header;
     private JScrollPane scrollBody;
     private JPanel footer;
+    private final Color BGCOLOR = Color.decode("#343a40");
+    private final Color TEXTCOLOR = Color.decode("#e0e1dd");
     public MainFrame() {
         setTitle("Music Management App");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -38,12 +40,34 @@ public class MainFrame extends JFrame {
     public void setBody(JPanel bodyPanel) {
         remove(scrollBody); // remove JScrollPane if exist
         scrollBody = new JScrollPane(bodyPanel); // wrap with JScrollPane
+
+        // Set warna untuk JScrollPane dan komponennya
+        scrollBody.getViewport().setBackground(BGCOLOR); // Background area
+        scrollBody.setBackground(BGCOLOR); // ScrollPane background
+        scrollBody.setBorder(BorderFactory.createEmptyBorder()); // Hapus border default
+
+        // Set warna scrollbar
+        scrollBody.getVerticalScrollBar().setBackground(BGCOLOR); // Vertical scrollbar
+        scrollBody.getHorizontalScrollBar().setBackground(TEXTCOLOR); // Horizontal scrollbar
+
         scrollBody.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED); // Scroll vertical
         scrollBody.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Disable horizontal scrolling
+
         add(scrollBody, BorderLayout.CENTER);
         revalidate();
         repaint();
     }
+
+
+//    public void setBody(JPanel bodyPanel) {
+//        remove(scrollBody); // remove JScrollPane if exist
+//        scrollBody = new JScrollPane(bodyPanel); // wrap with JScrollPane
+//        scrollBody.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED); // Scroll vertical
+//        scrollBody.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Disable horizontal scrolling
+//        add(scrollBody, BorderLayout.CENTER);
+//        revalidate();
+//        repaint();
+//    }
 
     public void setFooter(JPanel footerPanel) {
         remove(footer);
