@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class Body extends JPanel {
     private ArrayList<Music> arrMusic;
     private MusicController musicController;
-    private final String BASEPATHIMAGE = "src/main/java/org/example/MusicManagement/publics/img/";
+    private final String PATHBASEIMAGE = "src/main/java/org/example/MusicManagement/publics/img/";
     private final Color BGCOLOR = Color.decode("#212529");
     private final Color BGCOLOR2 = Color.decode("#343a40");
     private final Color TEXTCOLOR = Color.decode("#e0e1dd");
@@ -141,7 +141,7 @@ public class Body extends JPanel {
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 // Logika saat card diklik
                 System.out.println("Selected Music: " + music.getPathSong() + ", song name: " + music.getSongName());
-                musicController.startPlayMusic(music.getPathSong(), music.getSongName());
+                musicController.startPlayMusic(music);
             }
         });
 
@@ -189,25 +189,6 @@ public class Body extends JPanel {
             System.out.println("Update cancelled.");
         }
     }
-
-    private JTextField createStyledTextField(String text) {
-        JTextField textField = new JTextField(text, 20);
-        textField.setBackground(BGCOLOR);
-        textField.setForeground(TEXTCOLOR);
-        textField.setCaretColor(TEXTCOLOR);
-        textField.setBorder(BorderFactory.createLineBorder(TEXTCOLOR, 1, true));
-        return textField;
-    }
-
-
-    // Fungsi helper untuk membuat JLabel dengan gaya
-    private JLabel createStyledLabel(String text) {
-        JLabel label = new JLabel(text);
-        label.setForeground(TEXTCOLOR);
-        label.setFont(new Font("Cambria", Font.BOLD, 14));
-        return label;
-    }
-
     private void deleteAction(Music music, JPanel cardPanel) {
         // Konfigurasi UIManager untuk mendukung warna kustom
         UIManager.put("Panel.background", BGCOLOR);
@@ -245,76 +226,28 @@ public class Body extends JPanel {
         }
     }
 
-
-//    private void deleteAction(Music music, JPanel cardPanel) {
-//        // Display a confirmation dialog to verify the deletion
-//        int response = JOptionPane.showConfirmDialog(cardPanel,
-//                "Do you want to delete: " + music.getSongName() + "?",
-//                "Confirm Delete",
-//                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-//
-//        // If the user clicks "Yes"
-//        if (response == JOptionPane.YES_OPTION) {
-//            // Logic to search for and delete the song
-//            if (musicController.deleteMusic(music.getSongName())) {
-//                System.out.println("Music successfully deleted");
-//
-//            } else {
-//                System.out.println("Failed to delete music");
-//            }
-//        } else {
-//            // If the user clicks "No" or closes the dialog
-//            System.out.println("No song was deleted.");
-//        }
-//    }
+    private JTextField createStyledTextField(String text) {
+        JTextField textField = new JTextField(text, 20);
+        textField.setBackground(BGCOLOR);
+        textField.setForeground(TEXTCOLOR);
+        textField.setCaretColor(TEXTCOLOR);
+        textField.setBorder(BorderFactory.createLineBorder(TEXTCOLOR, 1, true));
+        return textField;
+    }
 
 
-
-//    private void updateAction(Music music, JPanel cardPanel) {
-//        // Show a JOptionPane with 4 input fields for updating music details
-//        JTextField songNameField = new JTextField(music.getSongName(), 20); // Prefill with current song name
-//        JTextField artistNameField = new JTextField(music.getArtistName(), 20); // Prefill with current artist name
-//        JTextField albumField = new JTextField(music.getAlbum(), 20); // Prefill with current album
-//        JTextField pathField = new JTextField(music.getPathSong(), 20); // Prefill with current path
-//
-//        // Create a panel to hold the fields
-//        JPanel panel = new JPanel(new GridLayout(4, 2)); // 4 rows, 2 columns (labels + input fields)
-//        panel.add(new JLabel("Song Name:"));
-//        panel.add(songNameField);
-//        panel.add(new JLabel("Artist Name:"));
-//        panel.add(artistNameField);
-//        panel.add(new JLabel("Album:"));
-//        panel.add(albumField);
-//        panel.add(new JLabel("Path:"));
-//        panel.add(pathField);
-//
-//        // Show the dialog with the panel
-//        int option = JOptionPane.showConfirmDialog(cardPanel, panel, "Update Music", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-//
-//        // If the user clicks OK, get the updated values from the text fields
-//        if (option == JOptionPane.OK_OPTION) {
-//            String newSongName = songNameField.getText();
-//            String newArtistName = artistNameField.getText();
-//            String newAlbum = albumField.getText();
-//            String newPath = pathField.getText();
-//
-//            boolean isUpdated = musicController.updateMusic(music.getSongName(),newSongName,newArtistName,newAlbum,newPath);  // Add your actual update logic here
-//            if (isUpdated) {
-//                System.out.println("Music updated successfully: " + music.getSongName());
-//            } else {
-//                System.out.println("Failed to update music.");
-//            }
-//        } else {
-//            System.out.println("Update cancelled.");
-//        }
-//    }
-
-
+    // Fungsi helper untuk membuat JLabel dengan gaya
+    private JLabel createStyledLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setForeground(TEXTCOLOR);
+        label.setFont(new Font("Cambria", Font.BOLD, 14));
+        return label;
+    }
 
     private JLabel createAlbumImage(Music music) {
         String albumPath = music.getAlbum();
         if (albumPath != null && !albumPath.isEmpty()) {
-            String imagePath = BASEPATHIMAGE + albumPath + ".jpg"; // Path for album image
+            String imagePath = PATHBASEIMAGE + albumPath + ".jpg"; // Path for album image
             File imageFile = new File(imagePath);
 
             // Check if the specific album image exists
@@ -326,7 +259,7 @@ public class Body extends JPanel {
         }
 
         // If the album image does not exist, load the default image
-        String defaultImagePath = BASEPATHIMAGE + "default.png";
+        String defaultImagePath = PATHBASEIMAGE + "default.png";
         File defaultImageFile = new File(defaultImagePath);
 
         // Check if the default image exists

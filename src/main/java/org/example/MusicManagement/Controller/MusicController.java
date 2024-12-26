@@ -12,13 +12,10 @@ import java.util.ArrayList;
 public class MusicController {
     private ArrayList<Music> arrMusic;
     private MainFrame mainFrame;
-    private Body body;
     private MusicPlayer musicPlayer;
-    private String currentMusic = "";
-    private String nextMusic = "";
     private Database db;
-    private final String BASEPATHSONG = "src/main/java/org/example/MusicManagement/publics/music/";
-    private Music musicNow;
+    private final String PATHBASESONG = "src/main/java/org/example/MusicManagement/publics/music/";
+    private Music musicPlayedNow;
 
     public MusicController() {
         // initilize db
@@ -27,7 +24,7 @@ public class MusicController {
         mainFrame = new MainFrame();
         arrMusic = db.getDataDB();
         musicPlayer = new MusicPlayer();
-        musicNow = null;
+        musicPlayedNow = null;
 
         // Load view
         setupView();
@@ -36,7 +33,6 @@ public class MusicController {
     private void setupView() {
         // call the view section: Header, Body and Footer
         mainFrame.setHeader(new Header(this));
-//        setUpBody();
         mainFrame.setBody(new Body(this));
         mainFrame.setFooter(new Footer());
     }
@@ -44,36 +40,16 @@ public class MusicController {
         mainFrame.setVisible(true);
     }
 
-    public void startPlayMusic(String targetSongPath,String newSongName){
-        String source = BASEPATHSONG + targetSongPath + ".mp3";
-        this.nextMusic = newSongName;
+    public void startPlayMusic(Music targetMusicPlay){
+        String source = PATHBASESONG + targetMusicPlay.getPathSong()+".mp3";
 
         // check if there is still anything playing
-        if (currentMusic != null) {
-            currentMusic = newSongName;
+        if (this.musicPlayedNow != null)
             this.stopAudio();
-            this.startPlayAudio(source);
-            mainFrame.setFooter(new Footer(this,newSongName));
-            this.nextMusic = null;
-        }else{
-            this.startPlayAudio(source);
-            this.currentMusic = targetSongPath;
-            mainFrame.setFooter(new Footer(this,newSongName));
-            this.nextMusic = null;
-        }
-    }
 
-    public void startPlayAudio(String source){
         musicPlayer.playAudio(source);
-    }
-    public void stopAudio(){
-        musicPlayer.stopAudio();
-    }
-    public void pauseAudio(){
-        musicPlayer.pauseAudio();
-    }
-    public void resumeAudio(){
-        musicPlayer.resumeAudio();
+        this.musicPlayedNow = targetMusicPlay;
+        mainFrame.setFooter(new Footer(this,this.musicPlayedNow.getSongName()));
     }
 
     public void addMusic(Music music) {
@@ -103,13 +79,11 @@ public class MusicController {
                 boolean dbUpdated = db.editToDB(targetSongName,newSongName,newArtistName,newAlbum,newPathSong);
 
                 // Reload body
-                if (dbUpdated){
-//                    setUpBody();
+                if (dbUpdated)
                     mainFrame.setBody(new Body(this));
-                }
 
                 // Check if the music being played is the same as the target and reload the footer.
-                if (currentMusic.equalsIgnoreCase(targetSongName)){
+                if (this.musicPlayedNow.getSongName().equalsIgnoreCase(targetSongName)){
                     if (oldPathSong.equalsIgnoreCase(newPathSong)){
                         if (!oldNameSong.equalsIgnoreCase(newSongName) || !oldArtistName.equalsIgnoreCase(newArtistName) || !oldAlbum.equalsIgnoreCase(newAlbum))
                             mainFrame.setFooter(new Footer(this, newSongName));
@@ -117,7 +91,7 @@ public class MusicController {
                         mainFrame.setFooter(new Footer());
                         this.stopAudio();
                     }
-                    currentMusic = newSongName;
+                    musicPlayedNow = music;
                 }
                 return dbUpdated;
             }
@@ -135,13 +109,13 @@ public class MusicController {
                 if (db.deleteToDB(targetSongName)) {
                     System.out.println("Song successfully removed from database.");
 
-                    // Reload ulang body
-//                    setUpBody();
+                    // Reload body
                     mainFrame.setBody(new Body(this));
 
                     // Reload the regular footer if the song being played is deleted
-                    if(currentMusic.equalsIgnoreCase(targetSongName)) {
+                    if(musicPlayedNow.getSongName().equalsIgnoreCase(targetSongName)) {
                         this.stopAudio();
+                        musicPlayedNow = null;
                         mainFrame.setFooter(new Footer());
                     }
                     return true;
@@ -154,6 +128,18 @@ public class MusicController {
         System.out.println("Song not found in array.");
         return false;
     }
+
+    public void stopAudio(){
+        musicPlayer.stopAudio();
+    }
+    public void pauseAudio(){
+        musicPlayer.pauseAudio();
+    }
+    public void resumeAudio(){
+        musicPlayer.resumeAudio();
+    }
+
+
     private void showDataList(){
         for (Music music : arrMusic){
             System.out.println("Songname : " + music.getSongName() + " Artist Name : " + music.getArtistName() + " Album : " + music.getAlbum() + " Path Song : " + music.getPathSong() );

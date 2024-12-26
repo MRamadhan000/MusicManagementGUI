@@ -1,7 +1,6 @@
 package org.example.MusicManagement.Views;
 
 import org.example.MusicManagement.Controller.MusicController;
-import org.example.MusicManagement.Models.MusicPlayer;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -12,7 +11,7 @@ public class Footer extends JPanel {
     private JButton resumeButton;  // Button to resume the music
     private final Color BGCOLOR = Color.decode("#212529");
     private final Color TEXTCOLOR = Color.decode("#e0e1dd");
-    private final String BASEICONPATH = "src/main/java/org/example/MusicManagement/publics/icon/";
+    private final String PATHBASEICON = "src/main/java/org/example/MusicManagement/publics/icon/";
 
     // footer when music is not playing
     public Footer(){
@@ -49,8 +48,8 @@ public class Footer extends JPanel {
         resumeButton = new JButton();
 
         // Load icon
-        ImageIcon playIcon = new ImageIcon(new ImageIcon(BASEICONPATH + "play.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH));
-        ImageIcon pauseIcon = new ImageIcon(new ImageIcon(BASEICONPATH + "pause.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH));
+        ImageIcon playIcon = new ImageIcon(new ImageIcon(PATHBASEICON + "play.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH));
+        ImageIcon pauseIcon = new ImageIcon(new ImageIcon(PATHBASEICON + "pause.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH));
 
         pauseButton.setIcon(pauseIcon);
         resumeButton.setIcon(playIcon);

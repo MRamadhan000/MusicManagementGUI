@@ -11,7 +11,7 @@ public class Header extends JPanel {
     private MusicController musicController;
     private final Color BGCOLOR = Color.decode("#212529");
     private final Color TEXTCOLOR = Color.decode("#e0e1dd");
-    private final String BASEICONPATH = "src/main/java/org/example/MusicManagement/publics/icon/";
+    private final String PATHBASEICON = "src/main/java/org/example/MusicManagement/publics/icon/";
     public Header(MusicController musicController) {
         this.musicController = musicController;
 
@@ -34,7 +34,7 @@ public class Header extends JPanel {
         rightPanel.setOpaque(false); // Buat transparan
 
         JButton addButton = new JButton();
-        ImageIcon addIcon = new ImageIcon(new ImageIcon(BASEICONPATH + "add.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH));
+        ImageIcon addIcon = new ImageIcon(new ImageIcon(PATHBASEICON + "add.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH));
         addButton.setIcon(addIcon);
         addButton.setBackground(BGCOLOR); // Warna latar belakang
         addButton.setBorderPainted(false); // Hilangkan garis border
