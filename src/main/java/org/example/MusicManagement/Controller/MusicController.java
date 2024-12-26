@@ -2,14 +2,13 @@ package org.example.MusicManagement.Controller;
 
 import org.example.MusicManagement.Database;
 import org.example.MusicManagement.Models.Music;
-import org.example.MusicManagement.Models.MusicPlayer;
 import org.example.MusicManagement.Views.Body;
 import org.example.MusicManagement.Views.Footer;
 import org.example.MusicManagement.Views.Header;
 import org.example.MusicManagement.Views.MainFrame;
 
 import java.util.ArrayList;
-public class MusicController {
+public class MusicController{
     private ArrayList<Music> arrMusic;
     private MainFrame mainFrame;
     private Database db;
@@ -24,13 +23,11 @@ public class MusicController {
         arrMusic = db.getDataDB();
 
         // Set up for music player
-        MusicPlayer musicPlayer = new MusicPlayer();
-        musicPlayerController = new MusicPlayerController(musicPlayer);
+        musicPlayerController = new MusicPlayerController();
 
         // Load view
         setupView();
     }
-
     private void setupView() {
         // call the view section: Header, Body and Footer
         mainFrame.setHeader(new Header(this));
@@ -42,6 +39,7 @@ public class MusicController {
     }
 
     public void startPlayMusic(Music targetMusicPlay){
+        musicPlayerController.setArrMusic(arrMusic);
         musicPlayerController.startPlayMusic(targetMusicPlay);
         mainFrame.setFooter(new Footer(this,musicPlayerController.getMusicPlayedNow().getSongName()));
     }

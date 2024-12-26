@@ -2,6 +2,9 @@ package org.example.MusicManagement.Models;
 
 import com.mpatric.mp3agic.Mp3File;
 import javazoom.jl.player.Player;
+import javazoom.jl.player.advanced.PlaybackListener;
+import org.example.MusicManagement.CustomInterface.CustomPlaybackListener;
+
 import javax.swing.*;
 import java.io.FileInputStream;
 
@@ -19,6 +22,12 @@ public class MusicPlayer {
     private Timer timer;
     private boolean isPlayAgin = false;
     private FileInputStream fileInputStream;
+    private CustomPlaybackListener playbackListener; // Add this line
+
+    // Add a constructor or a setter to set the PlaybackListener
+    public MusicPlayer(CustomPlaybackListener listener) {
+        this.playbackListener = listener;
+    }
     public void playAudio(String filePath) {
         try {
             fileInputStream = new FileInputStream(filePath);
@@ -42,6 +51,9 @@ public class MusicPlayer {
                     isPlaying = false;
                     stopTimer();
                     System.out.println("END");
+                    if (playbackListener != null) {
+                        playbackListener.onPlaybackFinished(); // Notify the listener
+                    }
                 }
             });
 
@@ -154,6 +166,10 @@ public class MusicPlayer {
         timer.setInitialDelay(0);
         timer.start();
         System.out.println("Timer reset to " + newDurationSecond + " seconds.");
+    }
+
+    public void setPlaybackListener(CustomPlaybackListener playbackListener) {
+        this.playbackListener = playbackListener;
     }
 
     public boolean isPlayAgin() {

@@ -1,20 +1,31 @@
 package org.example.MusicManagement.Controller;
+import org.example.MusicManagement.CustomInterface.CustomPlaybackListener;
 import org.example.MusicManagement.Models.Music;
 import org.example.MusicManagement.Models.MusicPlayer;
 
 import java.util.ArrayList;
 
-public class MusicPlayerController {
+public class MusicPlayerController implements CustomPlaybackListener {
+    public ArrayList<Music> arrMusic;
     private Music musicPlayedNow;
     MusicPlayer musicPlayer;
     private final String PATHBASESONG = "src/main/java/org/example/MusicManagement/publics/music/";
-    MusicPlayerController(MusicPlayer musicPlayer){
-        this.musicPlayer = musicPlayer;
+    MusicPlayerController(){
+        arrMusic = new ArrayList<>();
+        this.musicPlayer = new MusicPlayer(this);
         musicPlayedNow = null;
     }
 
-    public void playAgainMusic(ArrayList<Music> music){
+    @Override
+    public void onPlaybackFinished() {
+        // Call playAgainMusic() when playback is finished
+        if (musicPlayedNow != null) {
+            playAgainMusic(); // Pass the appropriate music list
+        }
+    }
 
+    public void playAgainMusic() {
+        System.out.println("Hello");
     }
 
     public void startPlayMusic(Music targetMusicPlay){
@@ -45,4 +56,7 @@ public class MusicPlayerController {
         this.musicPlayedNow = musicPlayedNow;
     }
 
+    public void setArrMusic(ArrayList<Music> arrMusic) {
+        this.arrMusic = arrMusic;
+    }
 }
