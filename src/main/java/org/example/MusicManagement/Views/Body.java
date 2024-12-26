@@ -149,65 +149,167 @@ public class Body extends JPanel {
     }
 
     private void updateAction(Music music, JPanel cardPanel) {
-        // Show a JOptionPane with 4 input fields for updating music details
-        JTextField songNameField = new JTextField(music.getSongName(), 20); // Prefill with current song name
-        JTextField artistNameField = new JTextField(music.getArtistName(), 20); // Prefill with current artist name
-        JTextField albumField = new JTextField(music.getAlbum(), 20); // Prefill with current album
-        JTextField pathField = new JTextField(music.getPathSong(), 20); // Prefill with current path
+        // Konfigurasi UIManager untuk mendukung warna kustom
+        UIManager.put("Panel.background", BGCOLOR);
+        UIManager.put("OptionPane.background", BGCOLOR);
+        UIManager.put("OptionPane.messageForeground", TEXTCOLOR);
+        UIManager.put("Button.background", TEXTCOLOR); // Tombol OK menggunakan TEXTCOLOR
+        UIManager.put("Button.foreground", BGCOLOR); // Teks tombol menggunakan BGCOLOR
 
-        // Create a panel to hold the fields
-        JPanel panel = new JPanel(new GridLayout(4, 2)); // 4 rows, 2 columns (labels + input fields)
-        panel.add(new JLabel("Song Name:"));
-        panel.add(songNameField);
-        panel.add(new JLabel("Artist Name:"));
-        panel.add(artistNameField);
-        panel.add(new JLabel("Album:"));
-        panel.add(albumField);
-        panel.add(new JLabel("Path:"));
-        panel.add(pathField);
+        // Panel input dengan GridLayout
+        JPanel panel = new JPanel(new GridLayout(4, 2, 10, 10));
+        panel.add(createStyledLabel("Song Name:"));
+        panel.add(createStyledTextField(music.getSongName()));
+        panel.add(createStyledLabel("Artist Name:"));
+        panel.add(createStyledTextField(music.getArtistName()));
+        panel.add(createStyledLabel("Album:"));
+        panel.add(createStyledTextField(music.getAlbum()));
+        panel.add(createStyledLabel("Path:"));
+        panel.add(createStyledTextField(music.getPathSong()));
 
-        // Show the dialog with the panel
-        int option = JOptionPane.showConfirmDialog(cardPanel, panel, "Update Music", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        // Tampilkan dialog JOptionPane
+        int option = JOptionPane.showConfirmDialog(
+                cardPanel,
+                panel,
+                "Update Music",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE
+        );
 
-        // If the user clicks OK, get the updated values from the text fields
+        // Proses pembaruan
         if (option == JOptionPane.OK_OPTION) {
-            String newSongName = songNameField.getText();
-            String newArtistName = artistNameField.getText();
-            String newAlbum = albumField.getText();
-            String newPath = pathField.getText();
+            String newSongName = ((JTextField) panel.getComponent(1)).getText();
+            String newArtistName = ((JTextField) panel.getComponent(3)).getText();
+            String newAlbum = ((JTextField) panel.getComponent(5)).getText();
+            String newPath = ((JTextField) panel.getComponent(7)).getText();
 
-            boolean isUpdated = musicController.updateMusic(music.getSongName(),newSongName,newArtistName,newAlbum,newPath);  // Add your actual update logic here
-            if (isUpdated) {
-                System.out.println("Music updated successfully: " + music.getSongName());
-            } else {
-                System.out.println("Failed to update music.");
-            }
+            boolean isUpdated = musicController.updateMusic(music.getSongName(), newSongName, newArtistName, newAlbum, newPath);
+            System.out.println(isUpdated ? "Music updated successfully." : "Failed to update music.");
         } else {
             System.out.println("Update cancelled.");
         }
     }
 
-    private void deleteAction(Music music, JPanel cardPanel) {
-        // Display a confirmation dialog to verify the deletion
-        int response = JOptionPane.showConfirmDialog(cardPanel,
-                "Do you want to delete: " + music.getSongName() + "?",
-                "Confirm Delete",
-                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+    private JTextField createStyledTextField(String text) {
+        JTextField textField = new JTextField(text, 20);
+        textField.setBackground(BGCOLOR);
+        textField.setForeground(TEXTCOLOR);
+        textField.setCaretColor(TEXTCOLOR);
+        textField.setBorder(BorderFactory.createLineBorder(TEXTCOLOR, 1, true));
+        return textField;
+    }
 
-        // If the user clicks "Yes"
-        if (response == JOptionPane.YES_OPTION) {
-            // Logic to search for and delete the song
+
+    // Fungsi helper untuk membuat JLabel dengan gaya
+    private JLabel createStyledLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setForeground(TEXTCOLOR);
+        label.setFont(new Font("Cambria", Font.BOLD, 14));
+        return label;
+    }
+
+    private void deleteAction(Music music, JPanel cardPanel) {
+        // Konfigurasi UIManager untuk mendukung warna kustom
+        UIManager.put("Panel.background", BGCOLOR);
+        UIManager.put("OptionPane.background", BGCOLOR);
+        UIManager.put("OptionPane.messageForeground", TEXTCOLOR);
+        UIManager.put("Button.background", TEXTCOLOR); // Tombol OK menggunakan TEXTCOLOR
+        UIManager.put("Button.foreground", BGCOLOR); // Teks tombol menggunakan BGCOLOR
+
+        // Panel konfirmasi dengan GridLayout
+        JPanel panel = new JPanel(new GridLayout(2, 1, 10, 10));
+        JLabel label = new JLabel("Are you sure you want to delete the song: " + music.getSongName() + "?");
+        label.setForeground(TEXTCOLOR);
+        label.setFont(new Font("Cambria", Font.BOLD, 14));
+        panel.add(label);
+
+        // Tampilkan dialog konfirmasi dengan tombol OK dan Cancel
+        int option = JOptionPane.showConfirmDialog(
+                cardPanel,
+                panel,
+                "Delete Music",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        // Proses penghapusan
+        if (option == JOptionPane.YES_OPTION) {
+            // Logic untuk menghapus lagu
             if (musicController.deleteMusic(music.getSongName())) {
                 System.out.println("Music successfully deleted");
-
             } else {
                 System.out.println("Failed to delete music");
             }
         } else {
-            // If the user clicks "No" or closes the dialog
             System.out.println("No song was deleted.");
         }
     }
+
+
+//    private void deleteAction(Music music, JPanel cardPanel) {
+//        // Display a confirmation dialog to verify the deletion
+//        int response = JOptionPane.showConfirmDialog(cardPanel,
+//                "Do you want to delete: " + music.getSongName() + "?",
+//                "Confirm Delete",
+//                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+//
+//        // If the user clicks "Yes"
+//        if (response == JOptionPane.YES_OPTION) {
+//            // Logic to search for and delete the song
+//            if (musicController.deleteMusic(music.getSongName())) {
+//                System.out.println("Music successfully deleted");
+//
+//            } else {
+//                System.out.println("Failed to delete music");
+//            }
+//        } else {
+//            // If the user clicks "No" or closes the dialog
+//            System.out.println("No song was deleted.");
+//        }
+//    }
+
+
+
+//    private void updateAction(Music music, JPanel cardPanel) {
+//        // Show a JOptionPane with 4 input fields for updating music details
+//        JTextField songNameField = new JTextField(music.getSongName(), 20); // Prefill with current song name
+//        JTextField artistNameField = new JTextField(music.getArtistName(), 20); // Prefill with current artist name
+//        JTextField albumField = new JTextField(music.getAlbum(), 20); // Prefill with current album
+//        JTextField pathField = new JTextField(music.getPathSong(), 20); // Prefill with current path
+//
+//        // Create a panel to hold the fields
+//        JPanel panel = new JPanel(new GridLayout(4, 2)); // 4 rows, 2 columns (labels + input fields)
+//        panel.add(new JLabel("Song Name:"));
+//        panel.add(songNameField);
+//        panel.add(new JLabel("Artist Name:"));
+//        panel.add(artistNameField);
+//        panel.add(new JLabel("Album:"));
+//        panel.add(albumField);
+//        panel.add(new JLabel("Path:"));
+//        panel.add(pathField);
+//
+//        // Show the dialog with the panel
+//        int option = JOptionPane.showConfirmDialog(cardPanel, panel, "Update Music", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+//
+//        // If the user clicks OK, get the updated values from the text fields
+//        if (option == JOptionPane.OK_OPTION) {
+//            String newSongName = songNameField.getText();
+//            String newArtistName = artistNameField.getText();
+//            String newAlbum = albumField.getText();
+//            String newPath = pathField.getText();
+//
+//            boolean isUpdated = musicController.updateMusic(music.getSongName(),newSongName,newArtistName,newAlbum,newPath);  // Add your actual update logic here
+//            if (isUpdated) {
+//                System.out.println("Music updated successfully: " + music.getSongName());
+//            } else {
+//                System.out.println("Failed to update music.");
+//            }
+//        } else {
+//            System.out.println("Update cancelled.");
+//        }
+//    }
+
+
 
     private JLabel createAlbumImage(Music music) {
         String albumPath = music.getAlbum();

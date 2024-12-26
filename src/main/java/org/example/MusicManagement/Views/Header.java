@@ -53,29 +53,35 @@ public class Header extends JPanel {
 
     private void addAction(JButton addButton) {
         addButton.addActionListener(e -> {
-            // Create panel for inputs
-            JPanel panel = new JPanel(new GridLayout(4, 2));
+            // Konfigurasi UIManager untuk mendukung warna kustom
+            UIManager.put("Panel.background", BGCOLOR);
+            UIManager.put("OptionPane.background", BGCOLOR);
+            UIManager.put("OptionPane.messageForeground", TEXTCOLOR);
+            UIManager.put("Button.background", TEXTCOLOR); // Tombol OK menggunakan TEXTCOLOR
+            UIManager.put("Button.foreground", BGCOLOR); // Teks tombol menggunakan BGCOLOR
 
-            // Create text fields for songName, artistName, album, and pathSong
-            JTextField songNameField = new JTextField();
-            JTextField artistNameField = new JTextField();
-            JTextField albumField = new JTextField();
-            JTextField pathSongField = new JTextField();
-
-            // Add components to the panel
-            panel.add(new JLabel("Song Name:"));
+            // Panel input dengan GridLayout
+            JPanel panel = new JPanel(new GridLayout(4, 2, 10, 10));
+            panel.add(createStyledLabel("Song Name:"));
+            JTextField songNameField = createStyledTextField(""); // Kosongkan text field
             panel.add(songNameField);
-            panel.add(new JLabel("Artist Name:"));
+
+            panel.add(createStyledLabel("Artist Name:"));
+            JTextField artistNameField = createStyledTextField(""); // Kosongkan text field
             panel.add(artistNameField);
-            panel.add(new JLabel("Album Name:"));
+
+            panel.add(createStyledLabel("Album:"));
+            JTextField albumField = createStyledTextField(""); // Kosongkan text field
             panel.add(albumField);
-            panel.add(new JLabel("Path to Song:"));
+
+            panel.add(createStyledLabel("Path to Song:"));
+            JTextField pathSongField = createStyledTextField(""); // Kosongkan text field
             panel.add(pathSongField);
 
-            // Show dialog for input
-            int option = JOptionPane.showConfirmDialog(this, panel, "Enter Song Details", JOptionPane.OK_CANCEL_OPTION);
+            // Tampilkan dialog JOptionPane
+            int option = JOptionPane.showConfirmDialog(this, panel, "Enter Song Details", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-            // If user presses OK
+            // Proses pembaruan jika tombol OK ditekan
             if (option == JOptionPane.OK_OPTION) {
                 String songName = songNameField.getText();
                 String artistName = artistNameField.getText();
@@ -85,10 +91,30 @@ public class Header extends JPanel {
                 if (!songName.isEmpty() && !artistName.isEmpty() && !album.isEmpty() && !pathSong.isEmpty()) {
                     Music music = new Music(songName, artistName, album, pathSong);
                     this.musicController.addMusic(music);
+                    System.out.println("Music added successfully.");
                 } else {
                     JOptionPane.showMessageDialog(this, "Please fill in all fields!", "Input Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
     }
+
+    // Fungsi helper untuk membuat JTextField dengan gaya
+    private JTextField createStyledTextField(String text) {
+        JTextField textField = new JTextField(text, 20);
+        textField.setBackground(BGCOLOR);
+        textField.setForeground(TEXTCOLOR);
+        textField.setCaretColor(TEXTCOLOR);
+        textField.setBorder(BorderFactory.createLineBorder(TEXTCOLOR, 1, true));
+        return textField;
+    }
+
+    // Fungsi helper untuk membuat JLabel dengan gaya
+    private JLabel createStyledLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setForeground(TEXTCOLOR);
+        label.setFont(new Font("Cambria", Font.BOLD, 14));
+        return label;
+    }
+
 }
