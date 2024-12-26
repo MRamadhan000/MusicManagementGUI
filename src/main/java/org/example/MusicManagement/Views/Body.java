@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class Body extends JPanel {
     private ArrayList<Music> arrMusic;
     private MusicController musicController;
-    private final String PATHBASEIMAGE = "src/main/java/org/example/MusicManagement/publics/img/";
+    private final String PATHBASEIMAGE = "src/main/java/org/example/MusicManagement/publics/album/";
     private final Color BGCOLOR = Color.decode("#212529");
     private final Color BGCOLOR2 = Color.decode("#343a40");
     private final Color TEXTCOLOR = Color.decode("#e0e1dd");

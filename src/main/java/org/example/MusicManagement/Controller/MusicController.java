@@ -12,19 +12,20 @@ import java.util.ArrayList;
 public class MusicController {
     private ArrayList<Music> arrMusic;
     private MainFrame mainFrame;
-    private MusicPlayer musicPlayer;
     private Database db;
-    private final String PATHBASESONG = "src/main/java/org/example/MusicManagement/publics/music/";
-    private Music musicPlayedNow;
+    private MusicPlayerController musicPlayerController;
 
     public MusicController() {
         // initilize db
         db = new Database();
+
         // initialize main view
         mainFrame = new MainFrame();
         arrMusic = db.getDataDB();
-        musicPlayer = new MusicPlayer();
-        musicPlayedNow = null;
+
+        // Set up for music player
+        MusicPlayer musicPlayer = new MusicPlayer();
+        musicPlayerController = new MusicPlayerController(musicPlayer);
 
         // Load view
         setupView();
@@ -41,15 +42,8 @@ public class MusicController {
     }
 
     public void startPlayMusic(Music targetMusicPlay){
-        String source = PATHBASESONG + targetMusicPlay.getPathSong()+".mp3";
-
-        // check if there is still anything playing
-        if (this.musicPlayedNow != null)
-            this.stopAudio();
-
-        musicPlayer.playAudio(source);
-        this.musicPlayedNow = targetMusicPlay;
-        mainFrame.setFooter(new Footer(this,this.musicPlayedNow.getSongName()));
+        musicPlayerController.startPlayMusic(targetMusicPlay);
+        mainFrame.setFooter(new Footer(this,musicPlayerController.getMusicPlayedNow().getSongName()));
     }
 
     public void addMusic(Music music) {
@@ -63,17 +57,17 @@ public class MusicController {
         mainFrame.setBody(new Body(this));
     }
     public boolean updateMusic(String targetSongName, String newSongName, String newArtistName, String newAlbum, String newPathSong) {
-        for (Music music : arrMusic) {
-            if (music.getSongName().equalsIgnoreCase(targetSongName)) {
-                String oldNameSong = music.getSongName();
-                String oldArtistName = music.getArtistName();
-                String oldAlbum = music.getAlbum();
-                String oldPathSong = music.getPathSong();
-                music.setSongName(newSongName);
-                music.setArtistName(newArtistName);
-                music.setAlbum(newAlbum);
-                music.setPathSong(newPathSong);
-                System.out.println("Music updated: " + music);
+        for (Music targetMusic : arrMusic) {
+            if (targetMusic.getSongName().equalsIgnoreCase(targetSongName)) {
+                String oldNameSong = targetMusic.getSongName();
+                String oldArtistName = targetMusic.getArtistName();
+                String oldAlbum = targetMusic.getAlbum();
+                String oldPathSong = targetMusic.getPathSong();
+                targetMusic.setSongName(newSongName);
+                targetMusic.setArtistName(newArtistName);
+                targetMusic.setAlbum(newAlbum);
+                targetMusic.setPathSong(newPathSong);
+                System.out.println("Music updated: " + targetMusic);
 
                 // Edit data to db
                 boolean dbUpdated = db.editToDB(targetSongName,newSongName,newArtistName,newAlbum,newPathSong);
@@ -83,7 +77,7 @@ public class MusicController {
                     mainFrame.setBody(new Body(this));
 
                 // Check if the music being played is the same as the target and reload the footer.
-                if (this.musicPlayedNow.getSongName().equalsIgnoreCase(targetSongName)){
+                if (musicPlayerController.getMusicPlayedNow().getSongName().equalsIgnoreCase(targetSongName)){
                     if (oldPathSong.equalsIgnoreCase(newPathSong)){
                         if (!oldNameSong.equalsIgnoreCase(newSongName) || !oldArtistName.equalsIgnoreCase(newArtistName) || !oldAlbum.equalsIgnoreCase(newAlbum))
                             mainFrame.setFooter(new Footer(this, newSongName));
@@ -91,7 +85,7 @@ public class MusicController {
                         mainFrame.setFooter(new Footer());
                         this.stopAudio();
                     }
-                    musicPlayedNow = music;
+                    musicPlayerController.setMusicPlayedNow(targetMusic);
                 }
                 return dbUpdated;
             }
@@ -113,9 +107,9 @@ public class MusicController {
                     mainFrame.setBody(new Body(this));
 
                     // Reload the regular footer if the song being played is deleted
-                    if(musicPlayedNow.getSongName().equalsIgnoreCase(targetSongName)) {
+                    if(musicPlayerController.getMusicPlayedNow().getSongName().equalsIgnoreCase(targetSongName)) {
                         this.stopAudio();
-                        musicPlayedNow = null;
+                        musicPlayerController.setMusicPlayedNow(null);
                         mainFrame.setFooter(new Footer());
                     }
                     return true;
@@ -130,15 +124,14 @@ public class MusicController {
     }
 
     public void stopAudio(){
-        musicPlayer.stopAudio();
+        musicPlayerController.stopAudio();
     }
     public void pauseAudio(){
-        musicPlayer.pauseAudio();
+        musicPlayerController.pauseAudio();
     }
     public void resumeAudio(){
-        musicPlayer.resumeAudio();
+        musicPlayerController.resumeAudio();
     }
-
 
     private void showDataList(){
         for (Music music : arrMusic){

@@ -5,6 +5,7 @@ module org.example.tesrouter {
     requires mysql.connector.j;
     requires java.desktop;
     requires jlayer;
+    requires mp3agic;
 
 
     opens org.example.MusicManagement to javafx.fxml;

@@ -23,6 +23,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.mpatric</groupId>
+            <artifactId>mp3agic</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+        <dependency>
             <groupId>com.github.umjammer</groupId>
             <artifactId>jlayer</artifactId>
             <version>1.0.3</version>
