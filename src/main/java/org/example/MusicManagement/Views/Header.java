@@ -11,6 +11,7 @@ public class Header extends JPanel {
     private MusicController musicController;
     private final Color BGCOLOR = Color.decode("#212529");
     private final Color TEXTCOLOR = Color.decode("#e0e1dd");
+    private final String BASEICONPATH = "src/main/java/org/example/MusicManagement/publics/icon/";
     public Header(MusicController musicController) {
         this.musicController = musicController;
 
@@ -24,7 +25,7 @@ public class Header extends JPanel {
         leftPanel.setOpaque(false); // Buat transparan
 
         JLabel title = new JLabel("Music Library");
-        title.setForeground(Color.WHITE);
+        title.setForeground(TEXTCOLOR);
         title.setFont(new Font("Cambria", Font.BOLD, 23));
         leftPanel.add(title);
 
@@ -32,15 +33,14 @@ public class Header extends JPanel {
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Panel dengan layout kanan
         rightPanel.setOpaque(false); // Buat transparan
 
-        JButton addButton = new JButton("Add");
-        addButton.setFont(new Font("Cambria", Font.BOLD, 17));
+        JButton addButton = new JButton();
+        ImageIcon addIcon = new ImageIcon(new ImageIcon(BASEICONPATH + "add.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH));
+        addButton.setIcon(addIcon);
         addButton.setBackground(BGCOLOR); // Warna latar belakang
-        addButton.setForeground(TEXTCOLOR); // Warna teks
-
         addButton.setBorderPainted(false); // Hilangkan garis border
         addButton.setFocusPainted(false); // Hilangkan efek fokus
-        addButton.setContentAreaFilled(false); // Hilangkan area isi default tombol
-        addButton.setOpaque(true); // Pastikan warna latar belakang terlihat
+
+//        addButton.setOpaque(true); // Pastikan warna latar belakang terlihat
 
         rightPanel.add(addButton);
 

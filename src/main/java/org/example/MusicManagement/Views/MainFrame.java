@@ -57,18 +57,6 @@ public class MainFrame extends JFrame {
         revalidate();
         repaint();
     }
-
-
-//    public void setBody(JPanel bodyPanel) {
-//        remove(scrollBody); // remove JScrollPane if exist
-//        scrollBody = new JScrollPane(bodyPanel); // wrap with JScrollPane
-//        scrollBody.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED); // Scroll vertical
-//        scrollBody.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Disable horizontal scrolling
-//        add(scrollBody, BorderLayout.CENTER);
-//        revalidate();
-//        repaint();
-//    }
-
     public void setFooter(JPanel footerPanel) {
         remove(footer);
         footer = footerPanel;

@@ -17,7 +17,6 @@ public class Body extends JPanel {
     private final Color BGCOLOR2 = Color.decode("#343a40");
     private final Color TEXTCOLOR = Color.decode("#e0e1dd");
     private final Color TEXTCOLOR2 = Color.decode("#e9ecef");
-
     public Body(MusicController controller) {
         this.musicController = controller;
         this.arrMusic = controller.getArrMusic();

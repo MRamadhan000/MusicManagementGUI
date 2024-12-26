@@ -12,6 +12,7 @@ public class Footer extends JPanel {
     private JButton resumeButton;  // Button to resume the music
     private final Color BGCOLOR = Color.decode("#212529");
     private final Color TEXTCOLOR = Color.decode("#e0e1dd");
+    private final String BASEICONPATH = "src/main/java/org/example/MusicManagement/publics/icon/";
 
     // footer when music is not playing
     public Footer(){
@@ -44,19 +45,25 @@ public class Footer extends JPanel {
         rightPanel.setOpaque(false);
 
         // Initialize pause and resume buttons
-        pauseButton = new JButton("Pause");
-        resumeButton = new JButton("Resume");
+        pauseButton = new JButton();
+        resumeButton = new JButton();
 
+        // Load icon
+        ImageIcon playIcon = new ImageIcon(new ImageIcon(BASEICONPATH + "play.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH));
+        ImageIcon pauseIcon = new ImageIcon(new ImageIcon(BASEICONPATH + "pause.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH));
+
+        pauseButton.setIcon(pauseIcon);
+        resumeButton.setIcon(playIcon);
         pauseButton.setFont( new Font ("Cambria",Font.BOLD,15));
 
         // Customize buttons (optional)
         pauseButton.setBackground(BGCOLOR); // Set background to BGCOLOR
-        pauseButton.setForeground(TEXTCOLOR); // Set text color to TEXTCOLORHH1
         pauseButton.setBorderPainted(false); // Remove the border
+        pauseButton.setFocusPainted(false);
 
         resumeButton.setBackground(BGCOLOR); // Set background to BGCOLOR
-        resumeButton.setForeground(TEXTCOLOR); // Set text color to TEXTCOLORHH1
         resumeButton.setBorderPainted(false); // Remove the border
+        resumeButton.setFocusPainted(false);
 
         // Initially, show only the pause button
         resumeButton.setVisible(false);
