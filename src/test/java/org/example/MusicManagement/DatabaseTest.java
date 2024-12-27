@@ -79,7 +79,7 @@ class DatabaseTest {
 
         String query = "SELECT * FROM music WHERE songName = ?";
 
-        boolean dataExistsBeforeDelete = false;
+        boolean isDatExist = false;
 
         try (Connection conn = database.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -92,14 +92,17 @@ class DatabaseTest {
                 // Verifikasi setiap baris hasil query sebelum dihapus
                 while (rs.next()) {
                     String songName = rs.getString("songName");
-                    if (newSongName.equals(songName)) {
-                        dataExistsBeforeDelete = true;
+                    String artistName  = rs.getString("artistName");
+                    String album = rs.getString("album");
+                    String pathSong= rs.getString("pathSong");
+                    if (newSongName.equals(songName) && newArtistName.equals(artistName) && newAlbum.equals(album) && newPathSong.equals(pathSong)) {
+                        isDatExist = true;
                         break;
                     }
                 }
             }
         }
-        assertTrue(dataExistsBeforeDelete, "Gagal");
+        assertTrue(isDatExist, "Gagal");
     }
 
 
@@ -118,7 +121,7 @@ class DatabaseTest {
 
         String query = "SELECT * FROM music WHERE songName = ?";
 
-        boolean dataExistsBeforeDelete = false;
+        boolean isDataExist = false;
 
         try (Connection conn = database.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -133,13 +136,13 @@ class DatabaseTest {
                     String songName = rs.getString("songName");
                     // Pastikan data ada sebelum dihapus
                     if (originalSongName.equals(songName)) {
-                        dataExistsBeforeDelete = true;
+                        isDataExist = true;
                         break;
                     }
                 }
             }
         }
-        assertFalse(dataExistsBeforeDelete, "Ggagal");
+        assertFalse(isDataExist, "Ggagal");
     }
 
 }
