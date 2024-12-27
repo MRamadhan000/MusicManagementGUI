@@ -40,8 +40,11 @@ public class MusicController{
 
     public void startPlayMusic(Music targetMusicPlay){
         showDataList();
+        // setArr from musicPlayerClass
         musicPlayerController.setArrMusic(arrMusic);
         musicPlayerController.startPlayMusic(targetMusicPlay);
+
+        // Update footer
         mainFrame.setFooter(new Footer(this,musicPlayerController.getMusicPlayedNow().getSongName()));
     }
 

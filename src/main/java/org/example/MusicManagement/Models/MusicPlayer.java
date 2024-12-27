@@ -10,7 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 // library for mp3 length https://github.com/mpatric/mp3agic.git
-//
+// libarary for mp3 player https://github.com/umjammer/jlayer.git
 
 public class MusicPlayer {
     private Player player;
@@ -21,21 +21,15 @@ public class MusicPlayer {
     private long pauseLocation = 0;
     private long totalSongLength = 0;
     private Timer timer;
-    private boolean isPlayAgin = false;
     private FileInputStream fileInputStream;
-    private int remainingTime; // Waktu yang tersisa untuk timer
+    private int remainingTime; //timeRemaining for music duration
+    private CustomPlaybackListener playbackListener; // use CostuumPlayBackListener
 
-    private CustomPlaybackListener playbackListener; // Add this line
-
-    // Add a constructor or a setter to set the PlaybackListener
     public MusicPlayer(CustomPlaybackListener listener) {
         this.playbackListener = listener;
     }
     public void playAudio(String filePath) {
-        System.out.println("path = |" + filePath+ "|");
-        // Hentikan audio yang sedang diputar sebelum memulai audio baru
         stopAudio();
-
         try {
             fileInputStream = new FileInputStream(filePath);
             currentFilePath = filePath;
@@ -51,7 +45,7 @@ public class MusicPlayer {
 
             playbackThread = new Thread(() -> {
                 try {
-                    player = new Player(fileInputStream);  // Membuat objek player
+                    player = new Player(fileInputStream);  // Make object player
                     System.out.println("Player created successfully: " + (player != null));
 
                     // Memulai pemutaran audio
@@ -59,7 +53,7 @@ public class MusicPlayer {
                     System.out.println("isPlaying set to true: " + isPlaying);
 
                     startTimer(durationSecond);
-                    player.play();  // Memulai pemutaran audio
+                    player.play();  // startPlayAudio
 
                 } catch (Exception e) {
                     System.out.println("Error playing audio: " + e.getMessage());
@@ -70,17 +64,17 @@ public class MusicPlayer {
 
                     try {
                         if (fileInputStream != null) {
-                            fileInputStream.close(); // Menutup file setelah selesai
+                            fileInputStream.close(); // Close file
                             System.out.println("FileInputStream closed.");
                         }
                     } catch (IOException e) {
                         System.out.println("Error closing FileInputStream: " + e.getMessage());
                     }
 
-                    if (remainingTime == 0) {
+                    if (remainingTime == 0)
                         playbackListener.onPlaybackFinished(); // Notify listener
-                    }
-                    playbackThread = null; // Set thread ke null untuk menghindari kebocoran
+
+                    playbackThread = null; // Set thread ke null
                 }
             });
             playbackThread.start();
@@ -92,14 +86,14 @@ public class MusicPlayer {
 
     public void stopAudio() {
         try {
-            // Pastikan player tidak null sebelum memanggil metode close
+            // Make sure player was close
             if (player != null) {
-                player.close(); // Hentikan pemutar
+                player.close();
                 System.out.println("Player closed successfully.");
-                player = null; // Set player ke null untuk menghindari penggunaan kembali
+                player = null;
             }
 
-            // Pastikan file input stream juga ditutup
+            // Make sure fileInputStream was close
             if (fileInputStream != null) {
                 fileInputStream.close();
                 System.out.println("FileInputStream closed successfully.");
@@ -110,14 +104,14 @@ public class MusicPlayer {
             isPlaying = false;
             isPaused = false;
 
-            // Hentikan thread playback jika masih berjalan
+            // Stop thread playback if it is still running
             if (playbackThread != null && playbackThread.isAlive()) {
-                playbackThread.interrupt(); // Interupsi thread playback
-                playbackThread = null; // Set thread ke null untuk menghindari kebocoran
+                playbackThread.interrupt(); // Playback thread interrupt
+                playbackThread = null; // Set thread to null to avoid leaks
                 System.out.println("Playback thread stopped successfully.");
             }
 
-            // Hentikan timer jika sedang berjalan
+            // Pause timer
             if (timer != null && timer.isRunning()) {
                 timer.stop();
                 System.out.println("Timer stopped successfully.");
@@ -132,18 +126,17 @@ public class MusicPlayer {
 
     private void startTimer(int durationSecond) {
         System.out.println("Starting timer...");
-        remainingTime = durationSecond; // Atur waktu awal sesuai durasi lagu
+        remainingTime = durationSecond; // Set the start time according to the duration of the song
 
         timer = new Timer(1000, new AbstractAction() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 if (remainingTime > 0) {
                     System.out.println("Time Remaining: " + remainingTime + " seconds");
-                    remainingTime--; // Kurangi waktu sisa
+                    remainingTime--;
                 } else {
                     ((Timer) e.getSource()).stop();
                     System.out.println("Timer Finished: Song duration complete!");
-                    isPlayAgin = true;
                 }
             }
         });
@@ -205,5 +198,4 @@ public class MusicPlayer {
             }
         }
     }
-
 }
