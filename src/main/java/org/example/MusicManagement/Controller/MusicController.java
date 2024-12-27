@@ -78,9 +78,11 @@ public class MusicController{
                 if (dbUpdated)
                     mainFrame.setBody(new Body(this));
 
+                System.out.println("Music played now " + musicPlayerController.getMusicPlayedNow().getSongName());
+
                 // Check if the music being played is the same as the target and reload the footer.
                 if (musicPlayerController.getMusicPlayedNow() != null){
-                    if (musicPlayerController.getMusicPlayedNow().getSongName().equalsIgnoreCase(targetSongName)){
+                    if (musicPlayerController.getMusicPlayedNow().getSongName().equalsIgnoreCase(newSongName)){
                         if (oldPathSong.equalsIgnoreCase(newPathSong)){
                             if (!oldNameSong.equalsIgnoreCase(newSongName) || !oldArtistName.equalsIgnoreCase(newArtistName) || !oldAlbum.equalsIgnoreCase(newAlbum))
                                 mainFrame.setFooter(new Footer(this, newSongName));
