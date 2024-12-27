@@ -23,7 +23,7 @@ public class MusicController{
         arrMusic = db.getDataDB();
 
         // Set up for music player
-        musicPlayerController = new MusicPlayerController();
+        musicPlayerController = new MusicPlayerController(this);
 
         // Load view
         setupView();
@@ -39,6 +39,7 @@ public class MusicController{
     }
 
     public void startPlayMusic(Music targetMusicPlay){
+        showDataList();
         musicPlayerController.setArrMusic(arrMusic);
         musicPlayerController.startPlayMusic(targetMusicPlay);
         mainFrame.setFooter(new Footer(this,musicPlayerController.getMusicPlayedNow().getSongName()));
@@ -75,15 +76,17 @@ public class MusicController{
                     mainFrame.setBody(new Body(this));
 
                 // Check if the music being played is the same as the target and reload the footer.
-                if (musicPlayerController.getMusicPlayedNow().getSongName().equalsIgnoreCase(targetSongName)){
-                    if (oldPathSong.equalsIgnoreCase(newPathSong)){
-                        if (!oldNameSong.equalsIgnoreCase(newSongName) || !oldArtistName.equalsIgnoreCase(newArtistName) || !oldAlbum.equalsIgnoreCase(newAlbum))
-                            mainFrame.setFooter(new Footer(this, newSongName));
-                    }else{
-                        mainFrame.setFooter(new Footer());
-                        this.stopAudio();
+                if (musicPlayerController.getMusicPlayedNow() != null){
+                    if (musicPlayerController.getMusicPlayedNow().getSongName().equalsIgnoreCase(targetSongName)){
+                        if (oldPathSong.equalsIgnoreCase(newPathSong)){
+                            if (!oldNameSong.equalsIgnoreCase(newSongName) || !oldArtistName.equalsIgnoreCase(newArtistName) || !oldAlbum.equalsIgnoreCase(newAlbum))
+                                mainFrame.setFooter(new Footer(this, newSongName));
+                        }else{
+                            mainFrame.setFooter(new Footer());
+                            this.stopAudio();
+                        }
+                        musicPlayerController.setMusicPlayedNow(targetMusic);
                     }
-                    musicPlayerController.setMusicPlayedNow(targetMusic);
                 }
                 return dbUpdated;
             }

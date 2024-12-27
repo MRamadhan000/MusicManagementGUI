@@ -7,6 +7,7 @@ import org.example.MusicManagement.CustomInterface.CustomPlaybackListener;
 
 import javax.swing.*;
 import java.io.FileInputStream;
+import java.io.IOException;
 
 // library for mp3 length https://github.com/mpatric/mp3agic.git
 //
@@ -22,6 +23,8 @@ public class MusicPlayer {
     private Timer timer;
     private boolean isPlayAgin = false;
     private FileInputStream fileInputStream;
+    private int remainingTime; // Waktu yang tersisa untuk timer
+
     private CustomPlaybackListener playbackListener; // Add this line
 
     // Add a constructor or a setter to set the PlaybackListener
@@ -29,51 +32,129 @@ public class MusicPlayer {
         this.playbackListener = listener;
     }
     public void playAudio(String filePath) {
+        System.out.println("path = |" + filePath+ "|");
+        // Hentikan audio yang sedang diputar sebelum memulai audio baru
+        stopAudio();
+
         try {
             fileInputStream = new FileInputStream(filePath);
             currentFilePath = filePath;
             totalSongLength = fileInputStream.available();
 
+            // Mencetak hasilnya
+            System.out.println("File Path: " + currentFilePath);
+            System.out.println("Total song length (in bytes): " + totalSongLength);
+
             Mp3File mp3file = new Mp3File(filePath);
-            System.out.println("Length musik : " + mp3file.getLengthInSeconds());
-            int durationSecond = ((int) mp3file.getLengthInSeconds()) + 2;
+            System.out.println("Length musik: " + mp3file.getLengthInSeconds());
+            int durationSecond = (int) mp3file.getLengthInSeconds();
 
             playbackThread = new Thread(() -> {
                 try {
-                    player = new Player(fileInputStream);
-                    isPlaying = true;
-                    startTimer(durationSecond);
+                    player = new Player(fileInputStream);  // Membuat objek player
+                    System.out.println("Player created successfully: " + (player != null));
 
-                    player.play();
+                    // Memulai pemutaran audio
+                    isPlaying = true;
+                    System.out.println("isPlaying set to true: " + isPlaying);
+
+                    startTimer(durationSecond);
+                    player.play();  // Memulai pemutaran audio
+
                 } catch (Exception e) {
                     System.out.println("Error playing audio: " + e.getMessage());
                 } finally {
                     isPlaying = false;
                     stopTimer();
                     System.out.println("END");
-                    if (playbackListener != null) {
-                        playbackListener.onPlaybackFinished(); // Notify the listener
+
+                    try {
+                        if (fileInputStream != null) {
+                            fileInputStream.close(); // Menutup file setelah selesai
+                            System.out.println("FileInputStream closed.");
+                        }
+                    } catch (IOException e) {
+                        System.out.println("Error closing FileInputStream: " + e.getMessage());
                     }
+
+                    if (remainingTime == 0) {
+                        playbackListener.onPlaybackFinished(); // Notify listener
+                    }
+                    playbackThread = null; // Set thread ke null untuk menghindari kebocoran
                 }
             });
-
             playbackThread.start();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Music not found: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             System.out.println("Error initializing audio: " + e.getMessage());
         }
-        System.out.println("THIS ISHDE");
     }
 
     public void stopAudio() {
-        if (player != null) {
-            player.close(); // Stop the player
+        try {
+            // Pastikan player tidak null sebelum memanggil metode close
+            if (player != null) {
+                player.close(); // Hentikan pemutar
+                System.out.println("Player closed successfully.");
+                player = null; // Set player ke null untuk menghindari penggunaan kembali
+            }
+
+            // Pastikan file input stream juga ditutup
+            if (fileInputStream != null) {
+                fileInputStream.close();
+                System.out.println("FileInputStream closed successfully.");
+                fileInputStream = null; // Set fileInputStream ke null
+            }
+
+            // Set status playback
             isPlaying = false;
             isPaused = false;
-        }
 
-        if (playbackThread != null && playbackThread.isAlive()) {
-            playbackThread.interrupt(); // Stop the thread if still running
+            // Hentikan thread playback jika masih berjalan
+            if (playbackThread != null && playbackThread.isAlive()) {
+                playbackThread.interrupt(); // Interupsi thread playback
+                playbackThread = null; // Set thread ke null untuk menghindari kebocoran
+                System.out.println("Playback thread stopped successfully.");
+            }
+
+            // Hentikan timer jika sedang berjalan
+            if (timer != null && timer.isRunning()) {
+                timer.stop();
+                System.out.println("Timer stopped successfully.");
+            }
+        } catch (IOException e) {
+            System.out.println("Error closing resources: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Unexpected error while stopping audio: " + e.getMessage());
+        }
+    }
+
+
+    private void startTimer(int durationSecond) {
+        System.out.println("Starting timer...");
+        remainingTime = durationSecond; // Atur waktu awal sesuai durasi lagu
+
+        timer = new Timer(1000, new AbstractAction() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                if (remainingTime > 0) {
+                    System.out.println("Time Remaining: " + remainingTime + " seconds");
+                    remainingTime--; // Kurangi waktu sisa
+                } else {
+                    ((Timer) e.getSource()).stop();
+                    System.out.println("Timer Finished: Song duration complete!");
+                    isPlayAgin = true;
+                }
+            }
+        });
+        timer.setInitialDelay(0);
+        timer.start();
+    }
+
+    private void stopTimer() {
+        if (timer != null && timer.isRunning()) {
+            timer.stop();
+            System.out.println("Timer stopped.");
         }
     }
 
@@ -84,6 +165,12 @@ public class MusicPlayer {
                 player.close(); // Stop the current player
                 isPaused = true;
                 isPlaying = false;
+
+                // Pause timer and store remaining time
+                if (timer != null && timer.isRunning()) {
+                    timer.stop();
+                    System.out.println("Timer paused with " + remainingTime + " seconds remaining.");
+                }
             } catch (Exception e) {
                 System.out.println("Error pausing audio: " + e.getMessage());
             }
@@ -110,69 +197,13 @@ public class MusicPlayer {
                 });
 
                 playbackThread.start();
+
+                // Resume timer from remaining time
+                startTimer(remainingTime);
             } catch (Exception e) {
                 System.out.println("Error resuming audio: " + e.getMessage());
             }
         }
     }
-    private void startTimer(int durationSecond) {
-        System.out.println("Starting timer...");
-        timer = new Timer(1000, new AbstractAction() {
-            int timeRemaining = durationSecond;
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                if (timeRemaining > 0) {
-                    System.out.println("Time Remaining: " + timeRemaining + " seconds");
-                    timeRemaining--;
-                } else {
-                    ((Timer) e.getSource()).stop();
-                    System.out.println("Timer Finished: Song duration complete!");
-                    isPlayAgin = true;
-                }
-            }
-        });
-        timer.setInitialDelay(0);
-        timer.start();
-    }
 
-    private void stopTimer() {
-        if (timer != null && timer.isRunning()) {
-            timer.stop();
-            System.out.println("Timer stopped.");
-        }
-    }
-
-    private void resetTimer(int newDurationSecond) {
-        // Stop the current timer if it's running
-        stopTimer();
-
-        // Reset the timeRemaining to the new duration
-        timer = new Timer(1000, new AbstractAction() {
-            int timeRemaining = newDurationSecond; // Use the new duration
-
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                if (timeRemaining > 0) {
-                    System.out.println("Time Remaining: " + timeRemaining + " seconds");
-                    timeRemaining--;
-                } else {
-                    ((Timer) e.getSource()).stop();
-                    System.out.println("Timer Finished: Song duration complete!");
-                    isPlayAgin = true;
-                }
-            }
-        });
-
-        timer.setInitialDelay(0);
-        timer.start();
-        System.out.println("Timer reset to " + newDurationSecond + " seconds.");
-    }
-
-    public void setPlaybackListener(CustomPlaybackListener playbackListener) {
-        this.playbackListener = playbackListener;
-    }
-
-    public boolean isPlayAgin() {
-        return isPlayAgin;
-    }
 }
