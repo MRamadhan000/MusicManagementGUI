@@ -5,6 +5,7 @@ public class Music {
     private String artistName;
     private String album;
     private String pathSong;
+
     public Music(String songName, String artistName,String album ,String pathSong) {
         this.songName = songName;
         this.artistName = artistName;

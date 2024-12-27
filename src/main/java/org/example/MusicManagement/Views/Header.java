@@ -12,6 +12,7 @@ public class Header extends JPanel {
     private final Color BGCOLOR = Color.decode("#212529");
     private final Color TEXTCOLOR = Color.decode("#e0e1dd");
     private final String PATHBASEICON = "src/main/java/org/example/MusicManagement/publics/icon/";
+
     public Header(MusicController musicController) {
         this.musicController = musicController;
 

@@ -9,6 +9,7 @@ public class MainFrame extends JFrame {
     private JPanel footer;
     private final Color BGCOLOR = Color.decode("#343a40");
     private final Color TEXTCOLOR = Color.decode("#e0e1dd");
+
     public MainFrame() {
         setTitle("Music Management App");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

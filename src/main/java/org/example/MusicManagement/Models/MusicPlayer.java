@@ -2,8 +2,7 @@ package org.example.MusicManagement.Models;
 
 import com.mpatric.mp3agic.Mp3File;
 import javazoom.jl.player.Player;
-import javazoom.jl.player.advanced.PlaybackListener;
-import org.example.MusicManagement.CustomInterface.CustomPlaybackListener;
+import org.example.MusicManagement.Interface.IPlaybackListener;
 
 import javax.swing.*;
 import java.io.FileInputStream;
@@ -23,13 +22,14 @@ public class MusicPlayer {
     private Timer timer;
     private FileInputStream fileInputStream;
     private int remainingTime; //timeRemaining for music duration
-    private CustomPlaybackListener playbackListener; // use CostuumPlayBackListener
+    private IPlaybackListener playbackListener; // use CostuumPlayBackListener
 
-    public MusicPlayer(CustomPlaybackListener listener) {
+    public MusicPlayer(IPlaybackListener listener) {
         this.playbackListener = listener;
     }
-    public void playAudio(String filePath) {
-        stopAudio();
+
+    public void playMusic(String filePath) {
+        stopMusic();
         try {
             fileInputStream = new FileInputStream(filePath);
             currentFilePath = filePath;
@@ -84,7 +84,7 @@ public class MusicPlayer {
         }
     }
 
-    public void stopAudio() {
+    public void stopMusic() {
         try {
             // Make sure player was close
             if (player != null) {
@@ -123,7 +123,6 @@ public class MusicPlayer {
         }
     }
 
-
     private void startTimer(int durationSecond) {
         System.out.println("Starting timer...");
         remainingTime = durationSecond; // Set the start time according to the duration of the song
@@ -151,7 +150,7 @@ public class MusicPlayer {
         }
     }
 
-    public void pauseAudio() {
+    public void pauseMusic() {
         if (isPlaying && !isPaused) {
             try {
                 pauseLocation = totalSongLength - fileInputStream.available();
@@ -170,7 +169,7 @@ public class MusicPlayer {
         }
     }
 
-    public void resumeAudio() {
+    public void resumeMusic() {
         if (isPaused) {
             try {
                 fileInputStream = new FileInputStream(currentFilePath);

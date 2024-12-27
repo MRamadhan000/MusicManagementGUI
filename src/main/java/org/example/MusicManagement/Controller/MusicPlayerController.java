@@ -1,5 +1,5 @@
 package org.example.MusicManagement.Controller;
-import org.example.MusicManagement.CustomInterface.CustomPlaybackListener;
+import org.example.MusicManagement.Interface.IPlaybackListener;
 import org.example.MusicManagement.Models.Music;
 import org.example.MusicManagement.Models.MusicPlayer;
 
@@ -7,12 +7,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class MusicPlayerController implements CustomPlaybackListener {
+public class MusicPlayerController implements IPlaybackListener {
     public ArrayList<Music> arrMusic;
     private Music musicPlayedNow;
     private MusicPlayer musicPlayer;
     private final String PATHBASESONG = "src/main/java/org/example/MusicManagement/publics/music/";
     private MusicController musicController;
+
     MusicPlayerController(MusicController musicController){
         this.musicController = musicController;
         this.musicPlayer = new MusicPlayer(this);
@@ -66,19 +67,19 @@ public class MusicPlayerController implements CustomPlaybackListener {
     public void startPlayMusic(Music targetMusicPlay){
         String source = PATHBASESONG + targetMusicPlay.getPathSong()+".mp3";
         setMusicPlayedNow(targetMusicPlay);
-        musicPlayer.playAudio(source);
+        musicPlayer.playMusic(source);
     }
 
     public void stopAudio(){
-        musicPlayer.stopAudio();
+        musicPlayer.stopMusic();
     }
 
     public void pauseAudio(){
-        musicPlayer.pauseAudio();
+        musicPlayer.pauseMusic();
     }
 
     public void resumeAudio(){
-        musicPlayer.resumeAudio();
+        musicPlayer.resumeMusic();
     }
 
     public Music getMusicPlayedNow() {
