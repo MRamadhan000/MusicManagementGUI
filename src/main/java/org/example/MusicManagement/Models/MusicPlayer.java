@@ -61,7 +61,8 @@ public class MusicPlayer {
                     isPlaying = false;
                     stopTimer();
                     System.out.println("END");
-
+                    if (remainingTime == 0)
+                        playbackListener.onPlaybackFinished(); // Notify listener
                     try {
                         if (fileInputStream != null) {
                             fileInputStream.close(); // Close file
@@ -71,8 +72,7 @@ public class MusicPlayer {
                         System.out.println("Error closing FileInputStream: " + e.getMessage());
                     }
 
-                    if (remainingTime == 0)
-                        playbackListener.onPlaybackFinished(); // Notify listener
+
 
                     playbackThread = null; // Set thread ke null
                 }
